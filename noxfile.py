@@ -7,7 +7,7 @@ from pathlib import Path
 
 import nox
 
-nox.options.sessions = ["generate", "lint", "sanity"]
+nox.options.sessions = ["tests", "generate", "lint", "sanity"]
 nox.options.reuse_existing_virtualenvs = True
 
 PROJECT_ROOT = Path(__file__).resolve().parent
@@ -152,6 +152,13 @@ def sanity(session: nox.Session) -> None:
         "--skip-test", "ansible-doc",      # doc_fragments require real azure collection
         env={"ANSIBLE_COLLECTIONS_PATH": str(base.parent.parent.parent)},
     )
+
+
+@nox.session(python="3.12")
+def tests(session: nox.Session) -> None:
+    """Run the pytest test suite."""
+    session.install("jinja2>=3.1", "pyyaml>=6.0", "pytest>=8.0")
+    session.run("pytest", "tests/", "-v", *session.posargs)
 
 
 @nox.session(python="3.12")
