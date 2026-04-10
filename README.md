@@ -213,4 +213,4 @@ Generated modules target [azure.azcollection](https://github.com/ansible-collect
 
 ## License
 
-Apache License 2.0
+GNU General Public License v3.0
