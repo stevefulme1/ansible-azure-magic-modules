@@ -1,0 +1,112 @@
+name: NetworkSecurityGroup
+module_name: azure_rm_securitygroup
+description: "Manage Azure network security groups"
+api_version: "2024-03-01"
+provider: Microsoft.Network
+resource_type: networkSecurityGroups
+generate_info: true
+author: "Azure Magic Modules Generator"
+doc_url: "https://learn.microsoft.com/en-us/rest/api/virtualnetwork/network-security-groups"
+
+properties:
+  name:
+    type: str
+    required: true
+    description: "Name of the network security group."
+    updatable: false
+
+  resource_group:
+    type: str
+    required: true
+    description: "Name of the resource group containing the network security group."
+    updatable: false
+
+  location:
+    type: str
+    required: true
+    description: "Azure region where the network security group will be created."
+    api_field: location
+    location: body
+    updatable: false
+
+  rules:
+    type: list
+    elements: dict
+    required: false
+    description: "List of security rules applied to the network security group."
+    api_field: securityRules
+    location: properties
+    suboptions:
+      name:
+        type: str
+        required: true
+        description: "Name of the security rule. Must be unique within the network security group."
+        api_field: name
+
+      priority:
+        type: int
+        required: true
+        description: "Priority of the rule (100-4096). Must be unique per rule."
+        api_field: properties.priority
+
+      direction:
+        type: str
+        required: true
+        description: "The direction of the rule. Specifies if the rule applies to inbound or outbound traffic."
+        choices:
+          - Inbound
+          - Outbound
+        api_field: properties.direction
+
+      access:
+        type: str
+        required: true
+        description: "Whether network traffic is allowed or denied."
+        choices:
+          - Allow
+          - Deny
+        api_field: properties.access
+
+      protocol:
+        type: str
+        required: true
+        description: "Network protocol this rule applies to."
+        choices:
+          - Tcp
+          - Udp
+          - Icmp
+          - "*"
+        api_field: properties.protocol
+
+      source_address_prefix:
+        type: str
+        required: false
+        description: "CIDR or source IP range. Use '*' to match any IP."
+        api_field: properties.sourceAddressPrefix
+
+      destination_address_prefix:
+        type: str
+        required: false
+        description: "CIDR or destination IP range. Use '*' to match any IP."
+        api_field: properties.destinationAddressPrefix
+
+      source_port_range:
+        type: str
+        required: false
+        default: "*"
+        description: "Source port or range. Integer or range between 0 and 65535, or '*' to match any port."
+        api_field: properties.sourcePortRange
+
+      destination_port_range:
+        type: str
+        required: false
+        default: "*"
+        description: "Destination port or range. Integer or range between 0 and 65535, or '*' to match any port."
+        api_field: properties.destinationPortRange
+
+  tags:
+    type: dict
+    required: false
+    description: "Dictionary of string:string pairs to assign as metadata to the network security group."
+    api_field: tags
+    location: tags

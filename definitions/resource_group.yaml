@@ -1,0 +1,38 @@
+name: ResourceGroup
+module_name: azure_rm_resourcegroup
+description: "Manage Azure resource groups"
+api_version: "2024-03-01"
+provider: Microsoft.Resources
+resource_type: resourceGroups
+generate_info: true
+author: "Azure Magic Modules Generator"
+doc_url: "https://learn.microsoft.com/en-us/rest/api/resources/resource-groups"
+
+properties:
+  name:
+    type: str
+    required: true
+    description: "Name of the resource group."
+    updatable: false
+
+  location:
+    type: str
+    required: true
+    description: "Azure region where the resource group will be created."
+    api_field: location
+    location: body
+    updatable: false
+
+  tags:
+    type: dict
+    required: false
+    description: "Dictionary of string:string pairs to assign as metadata to the resource group."
+    api_field: tags
+    location: tags
+
+  managed_by:
+    type: str
+    required: false
+    description: "The ID of the resource that manages this resource group."
+    api_field: managedBy
+    location: body

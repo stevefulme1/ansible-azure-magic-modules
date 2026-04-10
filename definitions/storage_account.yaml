@@ -1,0 +1,92 @@
+name: StorageAccount
+module_name: azure_rm_storageaccount
+description: "Manage Azure storage accounts"
+api_version: "2023-05-01"
+provider: Microsoft.Storage
+resource_type: storageAccounts
+generate_info: true
+author: "Azure Magic Modules Generator"
+doc_url: "https://learn.microsoft.com/en-us/rest/api/storagerp/storage-accounts"
+
+properties:
+  name:
+    type: str
+    required: true
+    description: "Name of the storage account. Must be between 3 and 24 characters, lowercase letters and numbers only."
+    updatable: false
+
+  resource_group:
+    type: str
+    required: true
+    description: "Name of the resource group containing the storage account."
+    updatable: false
+
+  location:
+    type: str
+    required: true
+    description: "Azure region where the storage account will be created."
+    api_field: location
+    location: body
+    updatable: false
+
+  account_type:
+    type: str
+    required: true
+    description: "The SKU name for the storage account, determining replication strategy."
+    choices:
+      - Standard_LRS
+      - Standard_GRS
+      - Standard_RAGRS
+      - Premium_LRS
+      - Standard_ZRS
+    api_field: sku.name
+    location: body
+
+  kind:
+    type: str
+    required: false
+    default: StorageV2
+    description: "The kind of storage account."
+    choices:
+      - Storage
+      - StorageV2
+      - BlobStorage
+    api_field: kind
+    location: body
+
+  access_tier:
+    type: str
+    required: false
+    description: "The access tier used for billing. Required for BlobStorage kind."
+    choices:
+      - Hot
+      - Cool
+    api_field: accessTier
+    location: properties
+
+  https_only:
+    type: bool
+    required: false
+    default: true
+    description: "Allow only HTTPS traffic to the storage account."
+    api_field: supportsHttpsTrafficOnly
+    location: properties
+
+  minimum_tls_version:
+    type: str
+    required: false
+    default: TLS1_2
+    description: "The minimum TLS version permitted on requests to the storage account."
+    choices:
+      - TLS1_0
+      - TLS1_1
+      - TLS1_2
+    api_field: minimumTlsVersion
+    location: properties
+
+  tags:
+    type: dict
+    required: false
+    description: "Dictionary of string:string pairs to assign as metadata to the storage account."
+    api_field: tags
+    location: tags

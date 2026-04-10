@@ -1,0 +1,43 @@
+name: VirtualNetwork
+module_name: azure_rm_virtualnetwork
+description: Manage Azure Virtual Network resources
+api_version: "2023-09-01"
+provider: Microsoft.Network
+resource_type: virtualNetworks
+generate_info: true
+author: Ansible Team
+doc_url: https://learn.microsoft.com/en-us/azure/virtual-network/
+
+properties:
+  - name: address_prefixes
+    type: list
+    elements: str
+    required: true
+    description: List of address prefixes for the virtual network.
+    location: properties
+    api_field: AddressPrefixes
+
+  - name: dns_servers
+    type: list
+    elements: str
+    required: false
+    description: List of DNS server IP addresses.
+    location: properties
+
+  - name: enable_ddos_protection
+    type: bool
+    required: false
+    description: Enable DDoS protection for the virtual network.
+    default: false
+    location: properties
+
+  - name: bgp_communities
+    type: dict
+    required: false
+    description: BGP communities associated with the virtual network.
+    location: properties
+    suboptions:
+      - name: virtual_network_community
+        type: str
+        required: true
+        description: The BGP community associated with the virtual network.

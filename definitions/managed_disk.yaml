@@ -1,0 +1,94 @@
+name: ManagedDisk
+module_name: azure_rm_manageddisk
+description: "Manage Azure managed disks"
+api_version: "2024-03-02"
+provider: Microsoft.Compute
+resource_type: disks
+generate_info: true
+author: "Azure Magic Modules Generator"
+doc_url: "https://learn.microsoft.com/en-us/rest/api/compute/disks"
+
+properties:
+  name:
+    type: str
+    required: true
+    description: "Name of the managed disk."
+    updatable: false
+
+  resource_group:
+    type: str
+    required: true
+    description: "Name of the resource group containing the managed disk."
+    updatable: false
+
+  location:
+    type: str
+    required: true
+    description: "Azure region where the managed disk will be created."
+    api_field: location
+    location: body
+    updatable: false
+
+  disk_size_gb:
+    type: int
+    required: true
+    description: "Size of the managed disk in gigabytes."
+    api_field: diskSizeGB
+    location: properties
+
+  sku:
+    type: str
+    required: false
+    description: "The SKU name for the managed disk, determining storage type and performance tier."
+    choices:
+      - Standard_LRS
+      - Premium_LRS
+      - StandardSSD_LRS
+      - UltraSSD_LRS
+      - Premium_ZRS
+    api_field: sku.name
+    location: body
+
+  create_option:
+    type: str
+    required: false
+    default: Empty
+    description: "Specifies how the managed disk is to be created."
+    choices:
+      - Empty
+      - Copy
+      - Import
+      - FromImage
+    api_field: creationData.createOption
+    location: properties
+
+  source_uri:
+    type: str
+    required: false
+    description: "URI to the source blob for Import create option, or resource ID for Copy create option."
+    api_field: creationData.sourceUri
+    location: properties
+
+  os_type:
+    type: str
+    required: false
+    description: "The operating system type of the disk."
+    choices:
+      - Linux
+      - Windows
+    api_field: osType
+    location: properties
+
+  zone:
+    type: str
+    required: false
+    description: "The availability zone where the managed disk will be created."
+    api_field: zones
+    location: body
+
+  tags:
+    type: dict
+    required: false
+    description: "Dictionary of string:string pairs to assign as metadata to the managed disk."
+    api_field: tags
+    location: tags
