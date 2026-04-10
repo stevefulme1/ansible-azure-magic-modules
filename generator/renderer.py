@@ -1,7 +1,5 @@
 """Render Ansible module source files from ResourceDefinition objects."""
 
-from __future__ import annotations
-
 from pathlib import Path
 
 import jinja2

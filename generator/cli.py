@@ -1,7 +1,5 @@
 """CLI entry point for the Azure Magic Modules generator."""
 
-from __future__ import annotations
-
 import argparse
 import sys
 from pathlib import Path

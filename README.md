@@ -205,7 +205,7 @@ Each generated CRUD module includes:
 
 ## Requirements
 
-- Python >= 3.10
+- Python >= 3.12
 - `jinja2 >= 3.1`
 - `pyyaml >= 6.0`
 

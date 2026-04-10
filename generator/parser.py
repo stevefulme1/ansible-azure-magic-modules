@@ -1,7 +1,5 @@
 """Parse YAML resource definitions into structured dataclasses."""
 
-from __future__ import annotations
-
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
