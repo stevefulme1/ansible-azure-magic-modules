@@ -9,5 +9,13 @@ description = "Generate Ansible modules for Azure from YAML resource definitions
 requires-python = ">=3.12"
 dependencies = ["jinja2>=3.1", "pyyaml>=6.0"]
 
+[project.optional-dependencies]
+dev = [
+    "nox>=2024.3",
+    "ansible-core>=2.16",
+    "ansible-lint>=24.2",
+    "pycodestyle>=2.11",
+]
+
 [project.scripts]
 azure-magic-modules = "generator.cli:main"

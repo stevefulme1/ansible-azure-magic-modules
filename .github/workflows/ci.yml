@@ -1,0 +1,82 @@
+---
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  generate:
+    name: Generate modules
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install nox
+        run: pip install nox
+
+      - name: Generate modules from definitions
+        run: nox -s generate
+
+      - name: Upload generated modules
+        uses: actions/upload-artifact@v4
+        with:
+          name: generated-modules
+          path: output/
+          retention-days: 1
+
+  lint:
+    name: Ansible Lint & pycodestyle
+    needs: generate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Download generated modules
+        uses: actions/download-artifact@v4
+        with:
+          name: generated-modules
+          path: output/
+
+      - name: Install nox
+        run: pip install nox
+
+      - name: Run lint session
+        run: nox -s lint
+
+  sanity:
+    name: Ansible Sanity
+    needs: generate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Download generated modules
+        uses: actions/download-artifact@v4
+        with:
+          name: generated-modules
+          path: output/
+
+      - name: Install nox
+        run: pip install nox
+
+      - name: Run sanity session
+        run: nox -s sanity
