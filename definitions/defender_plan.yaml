@@ -1,0 +1,40 @@
+name: DefenderPlan
+module_name: azure_rm_defenderplan
+description: "Manage Microsoft Defender for Cloud pricing plans."
+api_version: "2024-01-01"
+provider: Microsoft.Security
+resource_type: pricings
+generate_info: true
+author: "Azure Magic Modules Generator"
+doc_url: "https://learn.microsoft.com/en-us/azure/defender-for-cloud/defender-for-cloud-introduction"
+properties:
+  name:
+    type: str
+    required: true
+    description: "The Defender plan name."
+    choices:
+      - VirtualMachines
+      - SqlServers
+      - AppServices
+      - StorageAccounts
+      - Containers
+      - KeyVaults
+      - Dns
+      - Arm
+      - OpenSourceRelationalDatabases
+      - CosmosDbs
+      - CloudPosture
+  pricing_tier:
+    type: str
+    required: true
+    description: "The pricing tier for the Defender plan."
+    api_field: pricingTier
+    location: properties
+    choices:
+      - Free
+      - Standard
+  subplan:
+    type: str
+    description: "The sub-plan selected for the Defender plan."
+    api_field: subPlan
+    location: properties

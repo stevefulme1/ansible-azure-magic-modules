@@ -1,0 +1,62 @@
+name: BackupPolicyVM
+module_name: azure_rm_backuppolicyvm
+description: "Manage Azure Backup Policy for Virtual Machines."
+api_version: "2024-04-01"
+provider: Microsoft.RecoveryServices
+resource_type: vaults/backupPolicies
+generate_info: true
+author: "Azure Magic Modules Generator"
+doc_url: "https://learn.microsoft.com/en-us/azure/backup/backup-azure-arm-userestapi-createorupdatepolicy"
+properties:
+  name:
+    type: str
+    required: true
+    description: "Name of the backup policy."
+  resource_group:
+    type: str
+    required: true
+    description: "Name of the resource group."
+  vault_name:
+    type: str
+    required: true
+    description: "Name of the Recovery Services Vault."
+  timezone:
+    type: str
+    description: "Timezone for the backup schedule."
+    api_field: timeZone
+    location: body
+  instant_rp_retention_range_in_days:
+    type: int
+    description: "Instant recovery point retention in days."
+    api_field: instantRpRetentionRangeInDays
+    location: body
+  daily_schedule_time:
+    type: str
+    description: "Time for daily backup schedule."
+    api_field: schedulePolicy.scheduleRunTimes
+    location: body
+  daily_retention_count:
+    type: int
+    description: "Number of daily backups to retain."
+    api_field: retentionPolicy.dailySchedule.retentionDuration.count
+    location: body
+  weekly_retention_count:
+    type: int
+    description: "Number of weekly backups to retain."
+    api_field: retentionPolicy.weeklySchedule.retentionDuration.count
+    location: body
+  weekly_retention_days:
+    type: list
+    description: "Days of the week for weekly retention."
+    api_field: retentionPolicy.weeklySchedule.daysOfTheWeek
+    location: body
+  monthly_retention_count:
+    type: int
+    description: "Number of monthly backups to retain."
+    api_field: retentionPolicy.monthlySchedule.retentionDuration.count
+    location: body
+  yearly_retention_count:
+    type: int
+    description: "Number of yearly backups to retain."
+    api_field: retentionPolicy.yearlySchedule.retentionDuration.count
+    location: body

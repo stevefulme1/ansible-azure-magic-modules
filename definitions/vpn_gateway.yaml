@@ -1,0 +1,79 @@
+name: VirtualNetworkGateway
+module_name: azure_rm_virtualnetworkgateway
+description: "Manage Azure virtual network gateways."
+api_version: "2024-03-01"
+provider: Microsoft.Network
+resource_type: virtualNetworkGateways
+generate_info: true
+author: "Azure Magic Modules Generator"
+doc_url: "https://learn.microsoft.com/en-us/azure/vpn-gateway/vpn-gateway-about-vpngateways"
+properties:
+  name:
+    type: str
+    required: true
+    description: "Name of the virtual network gateway."
+  resource_group:
+    type: str
+    required: true
+    description: "Name of the resource group."
+  location:
+    type: str
+    required: true
+    description: "Azure region."
+    api_field: location
+    location: body
+  gateway_type:
+    type: str
+    description: "Type of the virtual network gateway."
+    api_field: gatewayType
+    location: body
+    choices:
+      - Vpn
+      - ExpressRoute
+  vpn_type:
+    type: str
+    description: "VPN type of the gateway."
+    api_field: vpnType
+    location: body
+    choices:
+      - RouteBased
+      - PolicyBased
+  sku_name:
+    type: str
+    description: "SKU name of the virtual network gateway."
+    api_field: sku.name
+    location: body
+    choices:
+      - Basic
+      - VpnGw1
+      - VpnGw2
+      - VpnGw3
+      - VpnGw4
+      - VpnGw5
+      - VpnGw1AZ
+      - VpnGw2AZ
+      - VpnGw3AZ
+      - VpnGw4AZ
+      - VpnGw5AZ
+      - ErGw1AZ
+      - ErGw2AZ
+      - ErGw3AZ
+  enable_bgp:
+    type: bool
+    description: "Enable BGP on the gateway."
+    api_field: enableBgp
+    location: body
+  ip_configuration_subnet_id:
+    type: str
+    description: "Resource ID of the gateway subnet."
+    api_field: ipConfigurations[0].subnet.id
+    location: body
+  ip_configuration_public_ip_id:
+    type: str
+    description: "Resource ID of the public IP for the gateway."
+    api_field: ipConfigurations[0].publicIPAddress.id
+    location: body
+  tags:
+    type: dict
+    description: "Resource tags."
+    location: tags

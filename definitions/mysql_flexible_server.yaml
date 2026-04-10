@@ -1,0 +1,89 @@
+name: MySqlFlexibleServer
+module_name: azure_rm_mysqlflexibleserver
+description: "Manage Azure Database for MySQL Flexible Server instances."
+api_version: "2023-12-30"
+provider: Microsoft.DBforMySQL
+resource_type: flexibleServers
+generate_info: true
+author: "Azure Magic Modules Generator"
+doc_url: "https://learn.microsoft.com/en-us/azure/mysql/flexible-server/overview"
+properties:
+  name:
+    type: str
+    required: true
+    description: "Name of the MySQL flexible server."
+  resource_group:
+    type: str
+    required: true
+    description: "Name of the resource group."
+  location:
+    type: str
+    required: true
+    description: "Azure region."
+    api_field: location
+    location: body
+  sku_name:
+    type: str
+    description: "Name of the SKU for the server."
+    api_field: sku.name
+    location: body
+  sku_tier:
+    type: str
+    description: "Tier of the SKU for the server."
+    choices:
+      - "Burstable"
+      - "GeneralPurpose"
+      - "MemoryOptimized"
+    api_field: sku.tier
+    location: body
+  administrator_login:
+    type: str
+    description: "Administrator login name for the server."
+    api_field: administratorLogin
+    location: properties
+  administrator_login_password:
+    type: str
+    no_log: true
+    description: "Administrator login password for the server."
+    api_field: administratorLoginPassword
+    location: properties
+  version:
+    type: str
+    description: "MySQL server version."
+    choices:
+      - "5.7"
+      - "8.0.21"
+    api_field: version
+    location: properties
+  storage_size_gb:
+    type: int
+    description: "Storage size in GB for the server."
+    api_field: storageSizeGB
+    location: properties
+  backup_retention_days:
+    type: int
+    description: "Backup retention period in days."
+    default: 7
+    api_field: backupRetentionDays
+    location: properties
+  geo_redundant_backup:
+    type: str
+    description: "Whether geo-redundant backup is enabled."
+    choices:
+      - "Enabled"
+      - "Disabled"
+    api_field: geoRedundantBackup
+    location: properties
+  high_availability_mode:
+    type: str
+    description: "High availability mode for the server."
+    choices:
+      - "Disabled"
+      - "SameZone"
+      - "ZoneRedundant"
+    api_field: mode
+    location: properties
+  tags:
+    type: dict
+    description: "Resource tags."
+    location: tags

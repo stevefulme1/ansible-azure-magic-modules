@@ -1,0 +1,64 @@
+name: DatabricksWorkspace
+module_name: azure_rm_databricksworkspace
+description: "Manage Azure Databricks workspaces."
+api_version: "2023-02-01"
+provider: Microsoft.Databricks
+resource_type: workspaces
+generate_info: true
+author: "Azure Magic Modules Generator"
+doc_url: "https://learn.microsoft.com/en-us/azure/databricks/"
+properties:
+  name:
+    type: str
+    required: true
+    description: "Name of the Databricks workspace."
+  resource_group:
+    type: str
+    required: true
+    description: "Name of the resource group."
+  location:
+    type: str
+    required: true
+    description: "Azure region."
+    api_field: location
+    location: body
+  sku_name:
+    type: str
+    description: "SKU tier for the Databricks workspace."
+    choices:
+      - standard
+      - premium
+      - trial
+    api_field: sku.name
+    location: body
+  managed_resource_group_id:
+    type: str
+    description: "Resource ID of the managed resource group."
+    api_field: managedResourceGroupId
+    location: body
+  public_network_access:
+    type: str
+    description: "Whether public network access is allowed."
+    choices:
+      - Enabled
+      - Disabled
+    api_field: publicNetworkAccess
+    location: body
+  required_nsg_rules:
+    type: str
+    description: "Required NSG rules for the workspace."
+    choices:
+      - AllRules
+      - NoAzureDatabricksRules
+      - NoAzureServiceRules
+    api_field: requiredNsgRules
+    location: body
+  enable_no_public_ip:
+    type: bool
+    description: "Whether to disable public IP for cluster nodes."
+    api_field: parameters.enableNoPublicIp.value
+    location: body
+  tags:
+    type: dict
+    description: "Resource tags."
+    location: tags

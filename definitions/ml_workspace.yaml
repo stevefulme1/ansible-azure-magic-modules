@@ -1,0 +1,78 @@
+name: MachineLearningWorkspace
+module_name: azure_rm_mlworkspace
+description: "Manage Azure Machine Learning workspaces."
+api_version: "2023-10-01"
+provider: Microsoft.MachineLearningServices
+resource_type: workspaces
+generate_info: true
+author: "Azure Magic Modules Generator"
+doc_url: "https://learn.microsoft.com/en-us/azure/machine-learning/"
+
+properties:
+  name:
+    type: str
+    required: true
+    description: "Name of the Machine Learning workspace."
+  resource_group:
+    type: str
+    required: true
+    description: "Name of the resource group."
+  location:
+    type: str
+    required: true
+    description: "Azure region."
+    api_field: location
+    location: body
+  sku_name:
+    type: str
+    description: "SKU tier of the workspace."
+    api_field: sku.name
+    location: body
+    choices:
+      - Basic
+      - Enterprise
+  storage_account_id:
+    type: str
+    required: true
+    description: "ARM resource ID of the storage account."
+    api_field: storageAccount
+    location: properties
+  key_vault_id:
+    type: str
+    required: true
+    description: "ARM resource ID of the key vault."
+    api_field: keyVault
+    location: properties
+  application_insights_id:
+    type: str
+    required: true
+    description: "ARM resource ID of the Application Insights instance."
+    api_field: applicationInsights
+    location: properties
+  container_registry_id:
+    type: str
+    description: "ARM resource ID of the container registry."
+    api_field: containerRegistry
+    location: properties
+  description:
+    type: str
+    description: "Description of the workspace."
+    api_field: description
+    location: properties
+  friendly_name:
+    type: str
+    description: "Friendly display name for the workspace."
+    api_field: friendlyName
+    location: properties
+  public_network_access:
+    type: str
+    description: "Whether public network access is allowed."
+    api_field: publicNetworkAccess
+    location: properties
+    choices:
+      - Enabled
+      - Disabled
+  tags:
+    type: dict
+    description: "Resource tags."
+    location: tags

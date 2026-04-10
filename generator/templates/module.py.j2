@@ -180,7 +180,7 @@ class AzureRM{{ resource.name }}(AzureRMModuleBase):
                 default={{ prop.default | to_python }},
 {% endif %}
 {% if prop.choices %}
-                choices={{ prop.choices | tojson }},
+                choices={{ prop.choices | to_python_list(16) }},
 {% endif %}
 {% if prop.elements %}
                 elements='{{ prop.elements }}',
@@ -197,7 +197,7 @@ class AzureRM{{ resource.name }}(AzureRMModuleBase):
                         default={{ subprop.default | tojson }},
 {% endif %}
 {% if subprop.choices %}
-                        choices={{ subprop.choices | tojson }},
+                        choices={{ subprop.choices | to_python_list(24) }},
 {% endif %}
 {% if subprop.elements %}
                         elements='{{ subprop.elements }}',

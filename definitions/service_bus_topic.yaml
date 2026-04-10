@@ -1,0 +1,52 @@
+name: ServiceBusTopic
+module_name: azure_rm_servicebustopic
+description: "Manage Azure Service Bus Topic instances."
+api_version: "2022-10-01-preview"
+provider: Microsoft.ServiceBus
+resource_type: namespaces/topics
+generate_info: true
+author: "Azure Magic Modules Generator"
+doc_url: "https://learn.microsoft.com/en-us/azure/service-bus-messaging/service-bus-queues-topics-subscriptions"
+properties:
+  name:
+    type: str
+    required: true
+    description: "Name of the Service Bus Topic."
+  resource_group:
+    type: str
+    required: true
+    description: "Name of the resource group."
+  namespace_name:
+    type: str
+    required: true
+    description: "Name of the Service Bus Namespace."
+  max_size_in_megabytes:
+    type: int
+    description: "Maximum size of the topic in megabytes."
+    api_field: maxSizeInMegabytes
+    location: body
+  default_message_ttl:
+    type: str
+    description: "Default message time-to-live in ISO 8601 format."
+    api_field: defaultMessageTimeToLive
+    location: body
+  requires_duplicate_detection:
+    type: bool
+    description: "Whether duplicate detection is required."
+    api_field: requiresDuplicateDetection
+    location: body
+  enable_partitioning:
+    type: bool
+    description: "Whether partitioning is enabled."
+    api_field: enablePartitioning
+    location: body
+  support_ordering:
+    type: bool
+    description: "Whether ordering is supported."
+    api_field: supportOrdering
+    location: body
+  max_message_size_in_kilobytes:
+    type: int
+    description: "Maximum message size in kilobytes."
+    api_field: maxMessageSizeInKilobytes
+    location: body

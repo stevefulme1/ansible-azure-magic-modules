@@ -1,0 +1,67 @@
+name: EventHubNamespace
+module_name: azure_rm_eventhubnamespace
+description: "Manage Azure Event Hub Namespace instances."
+api_version: "2024-01-01"
+provider: Microsoft.EventHub
+resource_type: namespaces
+generate_info: true
+author: "Azure Magic Modules Generator"
+doc_url: "https://learn.microsoft.com/en-us/azure/event-hubs/event-hubs-about"
+properties:
+  name:
+    type: str
+    required: true
+    description: "Name of the Event Hub Namespace."
+  resource_group:
+    type: str
+    required: true
+    description: "Name of the resource group."
+  location:
+    type: str
+    required: true
+    description: "Azure region."
+    api_field: location
+    location: body
+  sku_name:
+    type: str
+    description: "SKU name of the Event Hub Namespace."
+    api_field: sku.name
+    location: body
+    choices:
+      - Basic
+      - Standard
+      - Premium
+  sku_capacity:
+    type: int
+    description: "SKU capacity (throughput units) for the namespace."
+    api_field: sku.capacity
+    location: body
+  is_auto_inflate_enabled:
+    type: bool
+    description: "Whether auto-inflate is enabled."
+    api_field: isAutoInflateEnabled
+    location: body
+  maximum_throughput_units:
+    type: int
+    description: "Maximum throughput units when auto-inflate is enabled."
+    api_field: maximumThroughputUnits
+    location: body
+  zone_redundant:
+    type: bool
+    description: "Whether the namespace is zone redundant."
+    api_field: zoneRedundant
+    location: body
+  kafka_enabled:
+    type: bool
+    description: "Whether Kafka is enabled for the namespace."
+    api_field: kafkaEnabled
+    location: body
+  minimum_tls_version:
+    type: str
+    description: "Minimum TLS version for the namespace."
+    api_field: minimumTlsVersion
+    location: body
+  tags:
+    type: dict
+    description: "Resource tags."
+    location: tags

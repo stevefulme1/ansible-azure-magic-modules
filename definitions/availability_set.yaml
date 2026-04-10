@@ -1,0 +1,54 @@
+name: AvailabilitySet
+module_name: azure_rm_availabilityset
+description: "Manage Azure availability set instances."
+api_version: "2024-03-01"
+provider: Microsoft.Compute
+resource_type: availabilitySets
+generate_info: true
+author: "Azure Magic Modules Generator"
+doc_url: "https://learn.microsoft.com/en-us/azure/virtual-machines/availability-set-overview"
+properties:
+  name:
+    type: str
+    required: true
+    description: "Name of the availability set."
+  resource_group:
+    type: str
+    required: true
+    description: "Name of the resource group."
+  location:
+    type: str
+    required: true
+    description: "Azure region."
+    api_field: location
+    location: body
+  platform_fault_domain_count:
+    type: int
+    description: "Number of fault domains for the availability set."
+    api_field: platformFaultDomainCount
+    location: body
+    default: 2
+  platform_update_domain_count:
+    type: int
+    description: "Number of update domains for the availability set."
+    api_field: platformUpdateDomainCount
+    location: body
+    default: 5
+  sku_name:
+    type: str
+    description: "SKU name for the availability set."
+    api_field: sku.name
+    location: body
+    default: "Aligned"
+    choices:
+      - Aligned
+      - Classic
+  proximity_placement_group_id:
+    type: str
+    description: "Resource ID of the proximity placement group."
+    api_field: proximityPlacementGroup.id
+    location: body
+  tags:
+    type: dict
+    description: "Resource tags."
+    location: tags

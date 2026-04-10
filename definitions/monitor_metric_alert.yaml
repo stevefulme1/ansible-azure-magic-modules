@@ -1,0 +1,86 @@
+name: MonitorMetricAlert
+module_name: azure_rm_monitormetricalert
+description: "Manage Azure Monitor metric alert rules."
+api_version: "2018-03-01"
+provider: Microsoft.Insights
+resource_type: metricAlerts
+generate_info: true
+author: "Azure Magic Modules Generator"
+doc_url: "https://learn.microsoft.com/en-us/azure/azure-monitor/alerts/alerts-metric-overview"
+properties:
+  name:
+    type: str
+    required: true
+    description: "Name of the metric alert rule."
+  resource_group:
+    type: str
+    required: true
+    description: "Name of the resource group."
+  location:
+    type: str
+    description: "Azure region."
+    api_field: location
+    location: body
+    default: global
+  description:
+    type: str
+    description: "Description of the metric alert."
+    api_field: description
+    location: properties
+  severity:
+    type: int
+    required: true
+    description: "Alert severity level."
+    api_field: severity
+    location: properties
+    choices:
+      - 0
+      - 1
+      - 2
+      - 3
+      - 4
+  enabled:
+    type: bool
+    description: "Whether the metric alert is enabled."
+    api_field: enabled
+    location: properties
+    default: true
+  scopes:
+    type: list
+    element_type: str
+    required: true
+    description: "List of resource IDs this alert monitors."
+    api_field: scopes
+    location: properties
+  evaluation_frequency:
+    type: str
+    required: true
+    description: "How often the metric alert is evaluated (ISO 8601)."
+    api_field: evaluationFrequency
+    location: properties
+  window_size:
+    type: str
+    required: true
+    description: "Period of time to aggregate metrics (ISO 8601)."
+    api_field: windowSize
+    location: properties
+  target_resource_type:
+    type: str
+    description: "The resource type of the target resources."
+    api_field: targetResourceType
+    location: properties
+  target_resource_region:
+    type: str
+    description: "The region of the target resources."
+    api_field: targetResourceRegion
+    location: properties
+  auto_mitigate:
+    type: bool
+    description: "Whether the alert should be auto-resolved."
+    api_field: autoMitigate
+    location: properties
+    default: true
+  tags:
+    type: dict
+    description: "Resource tags."
+    location: tags

@@ -1,0 +1,71 @@
+name: IoTHub
+module_name: azure_rm_iothub
+description: "Manage Azure IoT Hub instances."
+api_version: "2021-07-02"
+provider: Microsoft.Devices
+resource_type: IotHubs
+generate_info: true
+author: "Azure Magic Modules Generator"
+doc_url: "https://learn.microsoft.com/en-us/azure/iot-hub/"
+properties:
+  name:
+    type: str
+    required: true
+    description: "Name of the IoT Hub."
+  resource_group:
+    type: str
+    required: true
+    description: "Name of the resource group."
+  location:
+    type: str
+    required: true
+    description: "Azure region."
+    api_field: location
+    location: body
+  sku_name:
+    type: str
+    description: "SKU name for the IoT Hub."
+    choices:
+      - F1
+      - B1
+      - B2
+      - B3
+      - S1
+      - S2
+      - S3
+    api_field: sku.name
+    location: body
+  sku_capacity:
+    type: int
+    description: "Number of provisioned IoT Hub units."
+    api_field: sku.capacity
+    location: body
+  event_hub_retention_in_days:
+    type: int
+    description: "Event Hub message retention in days."
+    api_field: eventHubEndpoints.events.retentionTimeInDays
+    location: body
+  event_hub_partition_count:
+    type: int
+    description: "Number of Event Hub partitions."
+    api_field: eventHubEndpoints.events.partitionCount
+    location: body
+  cloud_to_device_max_delivery_count:
+    type: int
+    description: "Max delivery count for cloud-to-device messages."
+    api_field: cloudToDevice.maxDeliveryCount
+    location: body
+  cloud_to_device_default_ttl:
+    type: str
+    description: "Default TTL for cloud-to-device messages."
+    api_field: cloudToDevice.defaultTtlAsIso8601
+    location: body
+  enable_file_upload_notifications:
+    type: bool
+    description: "Whether file upload notifications are enabled."
+    api_field: enableFileUploadNotifications
+    location: body
+  tags:
+    type: dict
+    description: "Resource tags."
+    location: tags

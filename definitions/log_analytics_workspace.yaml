@@ -1,0 +1,64 @@
+name: LogAnalyticsWorkspace
+module_name: azure_rm_loganalyticsworkspace
+description: "Manage Azure Log Analytics workspaces."
+api_version: "2023-09-01"
+provider: Microsoft.OperationalInsights
+resource_type: workspaces
+generate_info: true
+author: "Azure Magic Modules Generator"
+doc_url: "https://learn.microsoft.com/en-us/azure/azure-monitor/logs/log-analytics-workspace-overview"
+properties:
+  name:
+    type: str
+    required: true
+    description: "Name of the Log Analytics workspace."
+  resource_group:
+    type: str
+    required: true
+    description: "Name of the resource group."
+  location:
+    type: str
+    required: true
+    description: "Azure region."
+    api_field: location
+    location: body
+  sku_name:
+    type: str
+    description: "The SKU of the workspace."
+    api_field: sku.name
+    location: properties
+    choices:
+      - PerGB2018
+      - Free
+      - Standalone
+      - PerNode
+      - Standard
+      - Premium
+      - CapacityReservation
+  retention_in_days:
+    type: int
+    description: "Workspace data retention in days."
+    api_field: retentionInDays
+    location: properties
+    default: 30
+  daily_quota_gb:
+    type: float
+    description: "Daily volume cap in GB. Use -1 for unlimited."
+    api_field: workspaceCapping.dailyQuotaGb
+    location: properties
+  internet_ingestion_enabled:
+    type: bool
+    description: "Whether ingestion from the public internet is enabled."
+    api_field: publicNetworkAccessForIngestion
+    location: properties
+    default: true
+  internet_query_enabled:
+    type: bool
+    description: "Whether queries from the public internet are enabled."
+    api_field: publicNetworkAccessForQuery
+    location: properties
+    default: true
+  tags:
+    type: dict
+    description: "Resource tags."
+    location: tags

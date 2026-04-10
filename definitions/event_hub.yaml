@@ -1,0 +1,45 @@
+name: EventHub
+module_name: azure_rm_eventhub
+description: "Manage Azure Event Hub instances."
+api_version: "2024-01-01"
+provider: Microsoft.EventHub
+resource_type: namespaces/eventhubs
+generate_info: true
+author: "Azure Magic Modules Generator"
+doc_url: "https://learn.microsoft.com/en-us/azure/event-hubs/event-hubs-features"
+properties:
+  name:
+    type: str
+    required: true
+    description: "Name of the Event Hub."
+  resource_group:
+    type: str
+    required: true
+    description: "Name of the resource group."
+  namespace_name:
+    type: str
+    required: true
+    description: "Name of the Event Hub Namespace."
+  message_retention_in_days:
+    type: int
+    description: "Number of days to retain messages."
+    api_field: messageRetentionInDays
+    location: body
+  partition_count:
+    type: int
+    description: "Number of partitions for the Event Hub."
+    api_field: partitionCount
+    location: body
+  capture_enabled:
+    type: bool
+    description: "Whether capture is enabled."
+    api_field: captureDescription.enabled
+    location: body
+  capture_encoding:
+    type: str
+    description: "Encoding format for captured data."
+    api_field: captureDescription.encoding
+    location: body
+    choices:
+      - Avro
+      - AvroDeflate

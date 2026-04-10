@@ -1,0 +1,41 @@
+name: SecurityCenterContact
+module_name: azure_rm_securitycentercontact
+description: "Manage Azure Security Center contact configuration."
+api_version: "2020-01-01-preview"
+provider: Microsoft.Security
+resource_type: securityContacts
+generate_info: true
+author: "Azure Magic Modules Generator"
+doc_url: "https://learn.microsoft.com/en-us/azure/defender-for-cloud/configure-email-notifications"
+properties:
+  name:
+    type: str
+    description: "Name of the security contact."
+    default: default
+  email:
+    type: str
+    required: true
+    description: "Email address for security notifications."
+    api_field: email
+    location: properties
+  phone:
+    type: str
+    description: "Phone number for security notifications."
+    api_field: phone
+    location: properties
+  alert_notifications_state:
+    type: str
+    description: "Whether to send alert notifications."
+    api_field: alertNotifications.state
+    location: properties
+    choices:
+      - "On"
+      - "Off"
+  alerts_to_admins_state:
+    type: str
+    description: "Whether to send alerts to subscription admins."
+    api_field: alertsToAdmins.state
+    location: properties
+    choices:
+      - "On"
+      - "Off"

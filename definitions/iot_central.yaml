@@ -1,0 +1,60 @@
+name: IoTCentral
+module_name: azure_rm_iotcentral
+description: "Manage Azure IoT Central applications."
+api_version: "2021-06-01"
+provider: Microsoft.IoTCentral
+resource_type: iotApps
+generate_info: true
+author: "Azure Magic Modules Generator"
+doc_url: "https://learn.microsoft.com/en-us/azure/iot-central/"
+properties:
+  name:
+    type: str
+    required: true
+    description: "Name of the IoT Central application."
+  resource_group:
+    type: str
+    required: true
+    description: "Name of the resource group."
+  location:
+    type: str
+    required: true
+    description: "Azure region."
+    api_field: location
+    location: body
+  sku_name:
+    type: str
+    description: "SKU name for the IoT Central application."
+    choices:
+      - ST0
+      - ST1
+      - ST2
+    api_field: sku.name
+    location: body
+  subdomain:
+    type: str
+    description: "Subdomain of the IoT Central application."
+    api_field: subdomain
+    location: body
+  display_name:
+    type: str
+    description: "Display name of the IoT Central application."
+    api_field: displayName
+    location: body
+  template:
+    type: str
+    description: "Application template name or ID."
+    api_field: template
+    location: body
+  identity_type:
+    type: str
+    description: "Type of managed identity."
+    choices:
+      - SystemAssigned
+      - UserAssigned
+    api_field: identity.type
+    location: body
+  tags:
+    type: dict
+    description: "Resource tags."
+    location: tags

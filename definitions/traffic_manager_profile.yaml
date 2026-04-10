@@ -1,0 +1,79 @@
+name: TrafficManagerProfile
+module_name: azure_rm_trafficmanagerprofile
+description: "Manage Azure Traffic Manager profiles."
+api_version: "2024-03-01"
+provider: Microsoft.Network
+resource_type: trafficmanagerprofiles
+generate_info: true
+author: "Azure Magic Modules Generator"
+doc_url: "https://learn.microsoft.com/en-us/azure/traffic-manager/traffic-manager-overview"
+properties:
+  name:
+    type: str
+    required: true
+    description: "Name of the Traffic Manager profile."
+  resource_group:
+    type: str
+    required: true
+    description: "Name of the resource group."
+  location:
+    type: str
+    required: true
+    description: "Azure region."
+    api_field: location
+    location: body
+    default: "global"
+  traffic_routing_method:
+    type: str
+    description: "Traffic routing method for the profile."
+    api_field: trafficRoutingMethod
+    location: body
+    choices:
+      - Performance
+      - Priority
+      - Weighted
+      - Geographic
+      - MultiValue
+      - Subnet
+  dns_config_relative_name:
+    type: str
+    description: "Relative DNS name for the Traffic Manager profile."
+    api_field: dnsConfig.relativeName
+    location: body
+  dns_config_ttl:
+    type: int
+    description: "DNS TTL in seconds."
+    api_field: dnsConfig.ttl
+    location: body
+    default: 60
+  monitor_protocol:
+    type: str
+    description: "Protocol for endpoint health monitoring."
+    api_field: monitorConfig.protocol
+    location: body
+    choices:
+      - HTTP
+      - HTTPS
+      - TCP
+  monitor_port:
+    type: int
+    description: "Port for endpoint health monitoring."
+    api_field: monitorConfig.port
+    location: body
+  monitor_path:
+    type: str
+    description: "Path for endpoint health monitoring."
+    api_field: monitorConfig.path
+    location: body
+  profile_status:
+    type: str
+    description: "Status of the Traffic Manager profile."
+    api_field: profileStatus
+    location: body
+    choices:
+      - Enabled
+      - Disabled
+  tags:
+    type: dict
+    description: "Resource tags."
+    location: tags

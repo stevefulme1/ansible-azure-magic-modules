@@ -1,0 +1,78 @@
+name: DiagnosticSetting
+module_name: azure_rm_diagnosticsetting
+description: "Manage Azure diagnostic settings for resources."
+api_version: "2021-05-01-preview"
+provider: Microsoft.Insights
+resource_type: diagnosticSettings
+generate_info: true
+author: "Azure Magic Modules Generator"
+doc_url: "https://learn.microsoft.com/en-us/azure/azure-monitor/essentials/diagnostic-settings"
+properties:
+  name:
+    type: str
+    required: true
+    description: "Name of the diagnostic setting."
+  resource_uri:
+    type: str
+    required: true
+    description: "The resource ID to apply the diagnostic setting to."
+    api_field: resourceUri
+    location: body
+  storage_account_id:
+    type: str
+    description: "Resource ID of the storage account for diagnostics."
+    api_field: storageAccountId
+    location: properties
+  workspace_id:
+    type: str
+    description: "Resource ID of the Log Analytics workspace."
+    api_field: workspaceId
+    location: properties
+  event_hub_authorization_rule_id:
+    type: str
+    description: "Resource ID of the Event Hub authorization rule."
+    api_field: eventHubAuthorizationRuleId
+    location: properties
+  event_hub_name:
+    type: str
+    description: "Name of the Event Hub."
+    api_field: eventHubName
+    location: properties
+  logs:
+    type: list
+    element_type: dict
+    description: "List of log categories to configure."
+    api_field: logs
+    location: properties
+    suboptions:
+      category:
+        type: str
+        required: true
+        description: "Name of the log category."
+      enabled:
+        type: bool
+        required: true
+        description: "Whether this log category is enabled."
+      retention_days:
+        type: int
+        description: "Number of days to retain logs."
+        api_field: retentionPolicy.days
+  metrics:
+    type: list
+    element_type: dict
+    description: "List of metric categories to configure."
+    api_field: metrics
+    location: properties
+    suboptions:
+      category:
+        type: str
+        required: true
+        description: "Name of the metric category."
+      enabled:
+        type: bool
+        required: true
+        description: "Whether this metric category is enabled."
+      retention_days:
+        type: int
+        description: "Number of days to retain metrics."
+        api_field: retentionPolicy.days

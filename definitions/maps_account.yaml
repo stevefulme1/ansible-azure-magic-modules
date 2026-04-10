@@ -1,0 +1,56 @@
+name: MapsAccount
+module_name: azure_rm_mapsaccount
+description: "Manage Azure Maps accounts."
+api_version: "2023-06-01"
+provider: Microsoft.Maps
+resource_type: accounts
+generate_info: true
+author: "Azure Magic Modules Generator"
+doc_url: "https://learn.microsoft.com/en-us/azure/azure-maps/"
+properties:
+  name:
+    type: str
+    required: true
+    description: "Name of the Maps account."
+  resource_group:
+    type: str
+    required: true
+    description: "Name of the resource group."
+  location:
+    type: str
+    required: true
+    description: "Azure region."
+    api_field: location
+    location: body
+  sku_name:
+    type: str
+    description: "SKU name for the Maps account."
+    choices:
+      - S0
+      - S1
+      - G2
+    api_field: sku.name
+    location: body
+  kind:
+    type: str
+    description: "Kind of the Maps account."
+    choices:
+      - Gen1
+      - Gen2
+    api_field: kind
+    location: body
+  disable_local_auth:
+    type: bool
+    description: "Whether local authentication is disabled."
+    api_field: disableLocalAuth
+    location: body
+  cors_allowed_origins:
+    type: list
+    description: "List of allowed CORS origins."
+    elements: str
+    api_field: cors.corsRules.allowedOrigins
+    location: body
+  tags:
+    type: dict
+    description: "Resource tags."
+    location: tags

@@ -1,0 +1,76 @@
+name: SharedImage
+module_name: azure_rm_sharedimage
+description: "Manage Azure Shared Image instances."
+api_version: "2023-07-03"
+provider: Microsoft.Compute
+resource_type: galleries/images
+generate_info: true
+author: "Azure Magic Modules Generator"
+doc_url: "https://learn.microsoft.com/en-us/azure/virtual-machines/shared-image-galleries"
+properties:
+  name:
+    type: str
+    required: true
+    description: "Name of the Shared Image."
+  resource_group:
+    type: str
+    required: true
+    description: "Name of the resource group."
+  gallery_name:
+    type: str
+    required: true
+    description: "Name of the Shared Image Gallery."
+  location:
+    type: str
+    required: true
+    description: "Azure region."
+    api_field: location
+    location: body
+  os_type:
+    type: str
+    description: "OS type of the image."
+    choices:
+      - Linux
+      - Windows
+    api_field: osType
+    location: body
+  os_state:
+    type: str
+    description: "OS state of the image."
+    choices:
+      - Generalized
+      - Specialized
+    api_field: osState
+    location: body
+  hyper_v_generation:
+    type: str
+    description: "Hyper-V generation of the image."
+    choices:
+      - V1
+      - V2
+    api_field: hyperVGeneration
+    location: body
+  identifier_publisher:
+    type: str
+    description: "Publisher of the image identifier."
+    api_field: identifier.publisher
+    location: body
+  identifier_offer:
+    type: str
+    description: "Offer of the image identifier."
+    api_field: identifier.offer
+    location: body
+  identifier_sku:
+    type: str
+    description: "SKU of the image identifier."
+    api_field: identifier.sku
+    location: body
+  description:
+    type: str
+    description: "Description of the image."
+    api_field: description
+    location: body
+  tags:
+    type: dict
+    description: "Resource tags."
+    location: tags

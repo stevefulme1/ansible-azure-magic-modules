@@ -1,0 +1,76 @@
+name: RecoveryServicesVault
+module_name: azure_rm_recoveryservicesvault
+description: "Manage Azure Recovery Services Vault instances."
+api_version: "2024-04-01"
+provider: Microsoft.RecoveryServices
+resource_type: vaults
+generate_info: true
+author: "Azure Magic Modules Generator"
+doc_url: "https://learn.microsoft.com/en-us/azure/backup/backup-azure-recovery-services-vault-overview"
+properties:
+  name:
+    type: str
+    required: true
+    description: "Name of the Recovery Services Vault."
+  resource_group:
+    type: str
+    required: true
+    description: "Name of the resource group."
+  location:
+    type: str
+    required: true
+    description: "Azure region."
+    api_field: location
+    location: body
+  sku_name:
+    type: str
+    description: "SKU name of the vault."
+    choices:
+      - Standard
+      - RS0
+    api_field: sku.name
+    location: body
+  identity_type:
+    type: str
+    description: "Type of managed identity for the vault."
+    choices:
+      - SystemAssigned
+      - UserAssigned
+      - None
+    api_field: identity.type
+    location: body
+  public_network_access:
+    type: str
+    description: "Whether public network access is allowed."
+    choices:
+      - Enabled
+      - Disabled
+    api_field: publicNetworkAccess
+    location: body
+  immutability_state:
+    type: str
+    description: "Immutability state of the vault."
+    choices:
+      - Locked
+      - Unlocked
+      - Disabled
+    api_field: immutabilitySettings.immutabilityState
+    location: body
+  cross_subscription_restore_state:
+    type: str
+    description: "Cross subscription restore state of the vault."
+    choices:
+      - Enabled
+      - Disabled
+      - PermanentlyDisabled
+    api_field: restoreSettings.crossSubscriptionRestoreSettings.crossSubscriptionRestoreState
+    location: body
+  soft_delete_retention_in_days:
+    type: int
+    description: "Soft delete retention period in days."
+    api_field: softDeleteSettings.softDeleteRetentionPeriodInDays
+    location: body
+  tags:
+    type: dict
+    description: "Resource tags."
+    location: tags

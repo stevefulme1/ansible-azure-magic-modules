@@ -1,0 +1,105 @@
+name: AppServicePlan
+module_name: azure_rm_appserviceplan
+description: "Manage Azure App Service Plan instances."
+api_version: "2023-12-01"
+provider: Microsoft.Web
+resource_type: serverfarms
+generate_info: true
+author: "Azure Magic Modules Generator"
+doc_url: "https://learn.microsoft.com/en-us/azure/app-service/overview-hosting-plans"
+properties:
+  name:
+    type: str
+    required: true
+    description: "Name of the App Service Plan."
+  resource_group:
+    type: str
+    required: true
+    description: "Name of the resource group."
+  location:
+    type: str
+    required: true
+    description: "Azure region."
+    api_field: location
+    location: body
+  sku_name:
+    type: str
+    description: "SKU name of the App Service Plan."
+    api_field: sku.name
+    location: body
+    choices:
+      - F1
+      - D1
+      - B1
+      - B2
+      - B3
+      - S1
+      - S2
+      - S3
+      - P1v2
+      - P2v2
+      - P3v2
+      - P1v3
+      - P2v3
+      - P3v3
+      - I1
+      - I2
+      - I3
+      - I1v2
+      - I2v2
+      - I3v2
+      - Y1
+      - EP1
+      - EP2
+      - EP3
+  sku_tier:
+    type: str
+    description: "SKU tier of the App Service Plan."
+    api_field: sku.tier
+    location: body
+    choices:
+      - Free
+      - Shared
+      - Basic
+      - Standard
+      - Premium
+      - PremiumV2
+      - PremiumV3
+      - Isolated
+      - IsolatedV2
+      - Dynamic
+      - ElasticPremium
+  kind:
+    type: str
+    description: "Kind of the App Service Plan."
+    api_field: kind
+    location: body
+    choices:
+      - app
+      - linux
+      - elastic
+      - functionapp
+  reserved:
+    type: bool
+    description: "Whether the plan is Linux. Set to true for Linux."
+    api_field: reserved
+    location: body
+  per_site_scaling:
+    type: bool
+    description: "Whether per-app scaling is enabled."
+    api_field: perSiteScaling
+    location: body
+  maximum_elastic_worker_count:
+    type: int
+    description: "Maximum number of elastic workers for the plan."
+    api_field: maximumElasticWorkerCount
+    location: body
+  zone_redundant:
+    type: bool
+    description: "Whether the plan is zone redundant."
+    api_field: zoneRedundant
+    location: body
+  tags:
+    type: dict
+    description: "Resource tags."
+    location: tags

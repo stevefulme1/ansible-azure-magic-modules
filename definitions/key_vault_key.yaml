@@ -1,0 +1,85 @@
+name: KeyVaultKey
+module_name: azure_rm_keyvaultkey
+description: "Manage keys in Azure Key Vault."
+api_version: "2023-07-01"
+provider: Microsoft.KeyVault
+resource_type: vaults/keys
+generate_info: true
+author: "Azure Magic Modules Generator"
+doc_url: "https://learn.microsoft.com/en-us/azure/key-vault/keys/"
+properties:
+  name:
+    type: str
+    required: true
+    description: "Name of the key."
+  resource_group:
+    type: str
+    required: true
+    description: "Name of the resource group."
+  vault_name:
+    type: str
+    required: true
+    description: "Name of the Key Vault."
+    api_field: vaultName
+    location: body
+  key_type:
+    type: str
+    required: true
+    description: "The type of key to create."
+    api_field: kty
+    location: properties
+    choices:
+      - EC
+      - EC-HSM
+      - RSA
+      - RSA-HSM
+      - oct
+      - oct-HSM
+  key_size:
+    type: int
+    description: "The key size in bits."
+    api_field: keySize
+    location: properties
+    choices:
+      - 2048
+      - 3072
+      - 4096
+  curve_name:
+    type: str
+    description: "The elliptic curve name for EC key types."
+    api_field: curveName
+    location: properties
+    choices:
+      - P-256
+      - P-384
+      - P-521
+      - P-256K
+  key_ops:
+    type: list
+    element_type: str
+    description: "Permitted JSON web key operations."
+    api_field: keyOps
+    location: properties
+    choices:
+      - encrypt
+      - decrypt
+      - sign
+      - verify
+      - wrapKey
+      - unwrapKey
+  enabled:
+    type: bool
+    description: "Whether the key is enabled."
+    api_field: attributes.enabled
+    location: properties
+    default: true
+  not_before:
+    type: str
+    description: "Key not usable before this UTC datetime."
+    api_field: attributes.nbf
+    location: properties
+  expires:
+    type: str
+    description: "Key expiry UTC datetime."
+    api_field: attributes.exp
+    location: properties

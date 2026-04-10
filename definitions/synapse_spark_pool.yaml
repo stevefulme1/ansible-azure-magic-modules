@@ -1,0 +1,88 @@
+name: SynapseSparkPool
+module_name: azure_rm_synapsesparkpool
+description: "Manage Azure Synapse Analytics Spark pools."
+api_version: "2021-06-01"
+provider: Microsoft.Synapse
+resource_type: workspaces/bigDataPools
+generate_info: true
+author: "Azure Magic Modules Generator"
+doc_url: "https://learn.microsoft.com/en-us/azure/synapse-analytics/spark/"
+properties:
+  name:
+    type: str
+    required: true
+    description: "Name of the Spark pool."
+  resource_group:
+    type: str
+    required: true
+    description: "Name of the resource group."
+  workspace_name:
+    type: str
+    required: true
+    description: "Name of the parent Synapse workspace."
+  location:
+    type: str
+    required: true
+    description: "Azure region."
+    api_field: location
+    location: body
+  node_size:
+    type: str
+    description: "Size of the cluster nodes."
+    choices:
+      - Small
+      - Medium
+      - Large
+      - XLarge
+      - XXLarge
+      - XXXLarge
+    api_field: nodeSize
+    location: body
+  node_size_family:
+    type: str
+    description: "Node size family for the cluster."
+    choices:
+      - MemoryOptimized
+      - HardwareAcceleratedFPGA
+      - HardwareAcceleratedGPU
+    api_field: nodeSizeFamily
+    location: body
+  node_count:
+    type: int
+    description: "Number of nodes in the Spark pool."
+    api_field: nodeCount
+    location: body
+  auto_scale_enabled:
+    type: bool
+    description: "Whether auto-scaling is enabled."
+    api_field: autoScale.enabled
+    location: body
+  auto_scale_min_node_count:
+    type: int
+    description: "Minimum number of nodes when auto-scale is enabled."
+    api_field: autoScale.minNodeCount
+    location: body
+  auto_scale_max_node_count:
+    type: int
+    description: "Maximum number of nodes when auto-scale is enabled."
+    api_field: autoScale.maxNodeCount
+    location: body
+  auto_pause_enabled:
+    type: bool
+    description: "Whether auto-pause is enabled."
+    api_field: autoPause.enabled
+    location: body
+  auto_pause_delay_in_minutes:
+    type: int
+    description: "Delay in minutes before auto-pause activates."
+    api_field: autoPause.delayInMinutes
+    location: body
+  spark_version:
+    type: str
+    description: "Apache Spark version for the pool."
+    api_field: sparkVersion
+    location: body
+  tags:
+    type: dict
+    description: "Resource tags."
+    location: tags

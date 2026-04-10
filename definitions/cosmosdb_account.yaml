@@ -1,0 +1,84 @@
+name: CosmosDbAccount
+module_name: azure_rm_cosmosdbaccount
+description: "Manage Azure Cosmos DB account instances."
+api_version: "2024-05-15"
+provider: Microsoft.DocumentDB
+resource_type: databaseAccounts
+generate_info: true
+author: "Azure Magic Modules Generator"
+doc_url: "https://learn.microsoft.com/en-us/azure/cosmos-db/introduction"
+properties:
+  name:
+    type: str
+    required: true
+    description: "Name of the Cosmos DB account."
+  resource_group:
+    type: str
+    required: true
+    description: "Name of the resource group."
+  location:
+    type: str
+    required: true
+    description: "Azure region."
+    api_field: location
+    location: body
+  kind:
+    type: str
+    description: "Kind of the Cosmos DB account."
+    choices:
+      - "GlobalDocumentDB"
+      - "MongoDB"
+      - "Parse"
+    api_field: kind
+    location: body
+  consistency_level:
+    type: str
+    description: "Default consistency level for the account."
+    choices:
+      - "Strong"
+      - "BoundedStaleness"
+      - "Session"
+      - "ConsistentPrefix"
+      - "Eventual"
+    api_field: defaultConsistencyLevel
+    location: properties
+  geo_locations:
+    type: list
+    description: "List of geo-replication locations for the account."
+    api_field: locations
+    location: properties
+    suboptions:
+      location_name:
+        type: str
+        required: true
+        description: "Name of the Azure region."
+        api_field: locationName
+      failover_priority:
+        type: int
+        required: true
+        description: "Failover priority of the region."
+        api_field: failoverPriority
+      is_zone_redundant:
+        type: bool
+        description: "Whether the region is zone redundant."
+        api_field: isZoneRedundant
+  enable_automatic_failover:
+    type: bool
+    description: "Enable automatic failover for the account."
+    api_field: enableAutomaticFailover
+    location: properties
+  enable_free_tier:
+    type: bool
+    description: "Enable free tier for the account."
+    api_field: enableFreeTier
+    location: properties
+  database_account_offer_type:
+    type: str
+    description: "Offer type for the database account."
+    default: "Standard"
+    api_field: databaseAccountOfferType
+    location: properties
+  tags:
+    type: dict
+    description: "Resource tags."
+    location: tags

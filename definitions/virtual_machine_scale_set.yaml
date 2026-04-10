@@ -1,0 +1,109 @@
+name: VirtualMachineScaleSet
+module_name: azure_rm_virtualmachinescaleset
+description: "Manage Azure virtual machine scale set instances."
+api_version: "2024-03-01"
+provider: Microsoft.Compute
+resource_type: virtualMachineScaleSets
+generate_info: true
+author: "Azure Magic Modules Generator"
+doc_url: "https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/"
+properties:
+  name:
+    type: str
+    required: true
+    description: "Name of the virtual machine scale set."
+  resource_group:
+    type: str
+    required: true
+    description: "Name of the resource group."
+  location:
+    type: str
+    required: true
+    description: "Azure region."
+    api_field: location
+    location: body
+  sku_name:
+    type: str
+    description: "Name of the VM SKU for scale set instances."
+    api_field: sku.name
+    location: body
+  sku_tier:
+    type: str
+    description: "Tier of the VM SKU for scale set instances."
+    api_field: sku.tier
+    location: body
+  sku_capacity:
+    type: int
+    description: "Number of instances in the scale set."
+    api_field: sku.capacity
+    location: body
+  upgrade_policy_mode:
+    type: str
+    description: "Upgrade policy mode for the scale set."
+    api_field: upgradePolicy.mode
+    location: body
+    choices:
+      - Manual
+      - Rolling
+      - Automatic
+  admin_username:
+    type: str
+    description: "Administrator username for scale set instances."
+    api_field: virtualMachineProfile.osProfile.adminUsername
+    location: body
+  admin_password:
+    type: str
+    description: "Administrator password for scale set instances."
+    api_field: virtualMachineProfile.osProfile.adminPassword
+    location: body
+    no_log: true
+  image_publisher:
+    type: str
+    description: "Publisher of the VM image."
+    api_field: virtualMachineProfile.storageProfile.imageReference.publisher
+    location: body
+  image_offer:
+    type: str
+    description: "Offer of the VM image."
+    api_field: virtualMachineProfile.storageProfile.imageReference.offer
+    location: body
+  image_sku:
+    type: str
+    description: "SKU of the VM image."
+    api_field: virtualMachineProfile.storageProfile.imageReference.sku
+    location: body
+  image_version:
+    type: str
+    description: "Version of the VM image."
+    api_field: virtualMachineProfile.storageProfile.imageReference.version
+    location: body
+    default: "latest"
+  os_disk_type:
+    type: str
+    description: "Managed disk storage account type for the OS disk."
+    api_field: virtualMachineProfile.storageProfile.osDisk.managedDisk.storageAccountType
+    location: body
+    choices:
+      - Premium_LRS
+      - StandardSSD_LRS
+      - Standard_LRS
+  single_placement_group:
+    type: bool
+    description: "Whether the scale set is limited to a single placement group."
+    api_field: singlePlacementGroup
+    location: body
+  zone_balance:
+    type: bool
+    description: "Whether to balance instances across availability zones."
+    api_field: zoneBalance
+    location: body
+  zones:
+    type: list
+    element_type: str
+    description: "List of availability zones for the scale set."
+    api_field: zones
+    location: body
+  tags:
+    type: dict
+    description: "Resource tags."
+    location: tags

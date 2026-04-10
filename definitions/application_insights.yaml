@@ -1,0 +1,84 @@
+name: ApplicationInsights
+module_name: azure_rm_applicationinsights
+description: "Manage Azure Application Insights components."
+api_version: "2020-02-02"
+provider: Microsoft.Insights
+resource_type: components
+generate_info: true
+author: "Azure Magic Modules Generator"
+doc_url: "https://learn.microsoft.com/en-us/azure/azure-monitor/app/app-insights-overview"
+properties:
+  name:
+    type: str
+    required: true
+    description: "Name of the Application Insights component."
+  resource_group:
+    type: str
+    required: true
+    description: "Name of the resource group."
+  location:
+    type: str
+    required: true
+    description: "Azure region."
+    api_field: location
+    location: body
+  application_type:
+    type: str
+    required: true
+    description: "Type of application being monitored."
+    api_field: Application_Type
+    location: properties
+    choices:
+      - web
+      - other
+      - java
+      - phone
+  kind:
+    type: str
+    required: true
+    description: "The kind of application."
+    api_field: kind
+    location: body
+    choices:
+      - web
+      - ios
+      - other
+      - store
+      - java
+      - phone
+  flow_type:
+    type: str
+    description: "The flow type of the component."
+    api_field: Flow_Type
+    location: properties
+    default: Bluefield
+  request_source:
+    type: str
+    description: "The request source of the component."
+    api_field: Request_Source
+    location: properties
+    default: rest
+  workspace_resource_id:
+    type: str
+    description: "Resource ID of the Log Analytics workspace."
+    api_field: WorkspaceResourceId
+    location: properties
+  retention_in_days:
+    type: int
+    description: "Retention period in days."
+    api_field: RetentionInDays
+    location: properties
+  sampling_percentage:
+    type: float
+    description: "Percentage of data to sample."
+    api_field: SamplingPercentage
+    location: properties
+  disable_ip_masking:
+    type: bool
+    description: "Whether to disable IP address masking."
+    api_field: DisableIpMasking
+    location: properties
+  tags:
+    type: dict
+    description: "Resource tags."
+    location: tags

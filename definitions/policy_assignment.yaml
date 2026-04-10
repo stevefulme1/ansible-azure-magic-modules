@@ -1,0 +1,63 @@
+name: PolicyAssignment
+module_name: azure_rm_policyassignment
+description: "Manage Azure Policy assignments."
+api_version: "2023-04-01"
+provider: Microsoft.Authorization
+resource_type: policyAssignments
+generate_info: true
+author: "Azure Magic Modules Generator"
+doc_url: "https://learn.microsoft.com/en-us/azure/governance/policy/concepts/assignment-structure"
+properties:
+  name:
+    type: str
+    required: true
+    description: "Name of the policy assignment."
+  scope:
+    type: str
+    required: true
+    description: "The scope for the policy assignment."
+    api_field: scope
+    location: body
+  display_name:
+    type: str
+    description: "The display name of the policy assignment."
+    api_field: displayName
+    location: properties
+  description:
+    type: str
+    description: "Description of the policy assignment."
+    api_field: description
+    location: properties
+  policy_definition_id:
+    type: str
+    required: true
+    description: "The ID of the policy definition to assign."
+    api_field: policyDefinitionId
+    location: properties
+  parameters:
+    type: dict
+    description: "Parameter values for the assigned policy."
+    api_field: parameters
+    location: properties
+  enforcement_mode:
+    type: str
+    description: "The policy assignment enforcement mode."
+    api_field: enforcementMode
+    location: properties
+    choices:
+      - Default
+      - DoNotEnforce
+  identity_type:
+    type: str
+    description: "The managed identity type for the assignment."
+    api_field: identity.type
+    location: body
+    choices:
+      - SystemAssigned
+      - UserAssigned
+      - None
+  location:
+    type: str
+    description: "Azure region for the managed identity."
+    api_field: location
+    location: body

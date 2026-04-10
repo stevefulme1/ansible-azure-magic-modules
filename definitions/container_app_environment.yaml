@@ -1,0 +1,58 @@
+name: ContainerAppEnvironment
+module_name: azure_rm_containerappenvironment
+description: "Manage Azure Container App Environment instances."
+api_version: "2024-03-01"
+provider: Microsoft.App
+resource_type: managedEnvironments
+generate_info: true
+author: "Azure Magic Modules Generator"
+doc_url: "https://learn.microsoft.com/en-us/azure/container-apps/environment"
+properties:
+  name:
+    type: str
+    required: true
+    description: "Name of the Container App Environment."
+  resource_group:
+    type: str
+    required: true
+    description: "Name of the resource group."
+  location:
+    type: str
+    required: true
+    description: "Azure region."
+    api_field: location
+    location: body
+  log_analytics_workspace_customer_id:
+    type: str
+    description: "Log Analytics workspace customer ID."
+    api_field: appLogsConfiguration.logAnalyticsConfiguration.customerId
+    location: body
+  log_analytics_workspace_shared_key:
+    type: str
+    description: "Log Analytics workspace shared key."
+    api_field: appLogsConfiguration.logAnalyticsConfiguration.sharedKey
+    location: body
+  dapr_ai_instrumentation_key:
+    type: str
+    description: "Dapr Application Insights instrumentation key."
+    api_field: daprAIInstrumentationKey
+    location: body
+  zone_redundant:
+    type: bool
+    description: "Whether zone redundancy is enabled."
+    api_field: zoneRedundant
+    location: body
+  internal_load_balancer_enabled:
+    type: bool
+    description: "Whether internal load balancer is enabled."
+    api_field: vnetConfiguration.internal
+    location: body
+  infrastructure_subnet_id:
+    type: str
+    description: "Resource ID of the infrastructure subnet."
+    api_field: vnetConfiguration.infrastructureSubnetId
+    location: body
+  tags:
+    type: dict
+    description: "Resource tags."
+    location: tags

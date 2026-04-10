@@ -1,0 +1,92 @@
+name: PostgreSqlFlexibleServer
+module_name: azure_rm_postgresqlflexibleserver
+description: "Manage Azure Database for PostgreSQL Flexible Server instances."
+api_version: "2024-08-01"
+provider: Microsoft.DBforPostgreSQL
+resource_type: flexibleServers
+generate_info: true
+author: "Azure Magic Modules Generator"
+doc_url: "https://learn.microsoft.com/en-us/azure/postgresql/flexible-server/overview"
+properties:
+  name:
+    type: str
+    required: true
+    description: "Name of the PostgreSQL flexible server."
+  resource_group:
+    type: str
+    required: true
+    description: "Name of the resource group."
+  location:
+    type: str
+    required: true
+    description: "Azure region."
+    api_field: location
+    location: body
+  sku_name:
+    type: str
+    description: "Name of the SKU for the server."
+    api_field: sku.name
+    location: body
+  sku_tier:
+    type: str
+    description: "Tier of the SKU for the server."
+    choices:
+      - "Burstable"
+      - "GeneralPurpose"
+      - "MemoryOptimized"
+    api_field: sku.tier
+    location: body
+  administrator_login:
+    type: str
+    description: "Administrator login name for the server."
+    api_field: administratorLogin
+    location: properties
+  administrator_login_password:
+    type: str
+    no_log: true
+    description: "Administrator login password for the server."
+    api_field: administratorLoginPassword
+    location: properties
+  version:
+    type: str
+    description: "PostgreSQL server version."
+    choices:
+      - "12"
+      - "13"
+      - "14"
+      - "15"
+      - "16"
+    api_field: version
+    location: properties
+  storage_size_gb:
+    type: int
+    description: "Storage size in GB for the server."
+    api_field: storageSizeGB
+    location: properties
+  backup_retention_days:
+    type: int
+    description: "Backup retention period in days."
+    default: 7
+    api_field: backupRetentionDays
+    location: properties
+  geo_redundant_backup:
+    type: str
+    description: "Whether geo-redundant backup is enabled."
+    choices:
+      - "Enabled"
+      - "Disabled"
+    api_field: geoRedundantBackup
+    location: properties
+  high_availability_mode:
+    type: str
+    description: "High availability mode for the server."
+    choices:
+      - "Disabled"
+      - "SameZone"
+      - "ZoneRedundant"
+    api_field: mode
+    location: properties
+  tags:
+    type: dict
+    description: "Resource tags."
+    location: tags

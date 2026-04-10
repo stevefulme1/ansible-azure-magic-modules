@@ -1,0 +1,111 @@
+name: AksCluster
+module_name: azure_rm_akscluster
+description: "Manage Azure Kubernetes Service managed clusters."
+api_version: "2024-02-01"
+provider: Microsoft.ContainerService
+resource_type: managedClusters
+generate_info: true
+author: "Azure Magic Modules Generator"
+doc_url: "https://learn.microsoft.com/en-us/azure/aks/"
+properties:
+  name:
+    type: str
+    required: true
+    description: "Name of the AKS cluster."
+  resource_group:
+    type: str
+    required: true
+    description: "Name of the resource group."
+  location:
+    type: str
+    required: true
+    description: "Azure region."
+    api_field: location
+    location: body
+  dns_prefix:
+    type: str
+    description: "DNS prefix for the cluster."
+    api_field: dnsPrefix
+    location: body
+  kubernetes_version:
+    type: str
+    description: "Kubernetes version for the cluster."
+    api_field: kubernetesVersion
+    location: body
+  node_resource_group:
+    type: str
+    description: "Name of the resource group for cluster nodes."
+    api_field: nodeResourceGroup
+    location: body
+  network_plugin:
+    type: str
+    description: "Network plugin for the cluster."
+    api_field: networkProfile.networkPlugin
+    location: body
+    choices:
+      - azure
+      - kubenet
+      - none
+  network_policy:
+    type: str
+    description: "Network policy for the cluster."
+    api_field: networkProfile.networkPolicy
+    location: body
+    choices:
+      - azure
+      - calico
+  service_cidr:
+    type: str
+    description: "CIDR range for Kubernetes services."
+    api_field: networkProfile.serviceCidr
+    location: body
+  dns_service_ip:
+    type: str
+    description: "IP address for the Kubernetes DNS service."
+    api_field: networkProfile.dnsServiceIP
+    location: body
+  default_node_pool_name:
+    type: str
+    description: "Name of the default node pool."
+    api_field: agentPoolProfiles[0].name
+    location: body
+    default: "default"
+  default_node_pool_vm_size:
+    type: str
+    description: "VM size for the default node pool."
+    api_field: agentPoolProfiles[0].vmSize
+    location: body
+  default_node_pool_count:
+    type: int
+    description: "Number of nodes in the default node pool."
+    api_field: agentPoolProfiles[0].count
+    location: body
+  default_node_pool_min_count:
+    type: int
+    description: "Minimum number of nodes for autoscaling."
+    api_field: agentPoolProfiles[0].minCount
+    location: body
+  default_node_pool_max_count:
+    type: int
+    description: "Maximum number of nodes for autoscaling."
+    api_field: agentPoolProfiles[0].maxCount
+    location: body
+  enable_rbac:
+    type: bool
+    description: "Whether to enable Kubernetes RBAC."
+    api_field: enableRBAC
+    location: body
+    default: true
+  identity_type:
+    type: str
+    description: "Type of managed identity for the cluster."
+    api_field: identity.type
+    location: body
+    choices:
+      - SystemAssigned
+      - UserAssigned
+      - None
+  tags:
+    type: dict
+    description: "Resource tags."
+    location: tags

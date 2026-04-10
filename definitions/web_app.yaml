@@ -1,0 +1,75 @@
+name: WebApp
+module_name: azure_rm_webapp
+description: "Manage Azure Web App instances."
+api_version: "2023-12-01"
+provider: Microsoft.Web
+resource_type: sites
+generate_info: true
+author: "Azure Magic Modules Generator"
+doc_url: "https://learn.microsoft.com/en-us/azure/app-service/overview"
+properties:
+  name:
+    type: str
+    required: true
+    description: "Name of the Web App."
+  resource_group:
+    type: str
+    required: true
+    description: "Name of the resource group."
+  location:
+    type: str
+    required: true
+    description: "Azure region."
+    api_field: location
+    location: body
+  server_farm_id:
+    type: str
+    description: "Resource ID of the App Service Plan."
+    api_field: serverFarmId
+    location: body
+  kind:
+    type: str
+    description: "Kind of the Web App."
+    api_field: kind
+    location: body
+    choices:
+      - app
+      - "app,linux"
+      - functionapp
+      - "functionapp,linux"
+  enabled:
+    type: bool
+    description: "Whether the Web App is enabled."
+    api_field: enabled
+    location: body
+    default: true
+  https_only:
+    type: bool
+    description: "Whether the Web App only accepts HTTPS traffic."
+    api_field: httpsOnly
+    location: body
+    default: true
+  client_affinity_enabled:
+    type: bool
+    description: "Whether client affinity is enabled."
+    api_field: clientAffinityEnabled
+    location: body
+  runtime_stack:
+    type: str
+    description: "Runtime stack for the Web App."
+    api_field: siteConfig.linuxFxVersion
+    location: body
+  runtime_version:
+    type: str
+    description: "Runtime version for the Web App."
+    api_field: siteConfig.netFrameworkVersion
+    location: body
+  always_on:
+    type: bool
+    description: "Whether the Web App is always on."
+    api_field: siteConfig.alwaysOn
+    location: body
+  tags:
+    type: dict
+    description: "Resource tags."
+    location: tags

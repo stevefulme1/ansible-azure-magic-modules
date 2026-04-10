@@ -1,0 +1,66 @@
+name: BotService
+module_name: azure_rm_botservice
+description: "Manage Azure Bot Service instances."
+api_version: "2023-09-15-preview"
+provider: Microsoft.BotService
+resource_type: botServices
+generate_info: true
+author: "Azure Magic Modules Generator"
+doc_url: "https://learn.microsoft.com/en-us/azure/bot-service/"
+
+properties:
+  name:
+    type: str
+    required: true
+    description: "Name of the bot service."
+  resource_group:
+    type: str
+    required: true
+    description: "Name of the resource group."
+  location:
+    type: str
+    required: true
+    description: "Azure region."
+    api_field: location
+    location: body
+  sku_name:
+    type: str
+    required: true
+    description: "SKU name of the bot service."
+    api_field: sku.name
+    location: body
+    choices:
+      - F0
+      - S1
+  kind:
+    type: str
+    required: true
+    description: "The kind of bot service."
+    api_field: kind
+    location: body
+    choices:
+      - azurebot
+      - sdk
+      - designer
+      - function
+      - bot
+  display_name:
+    type: str
+    description: "Display name of the bot."
+    api_field: displayName
+    location: properties
+  endpoint:
+    type: str
+    description: "Messaging endpoint URL for the bot."
+    api_field: endpoint
+    location: properties
+  msa_app_id:
+    type: str
+    required: true
+    description: "Microsoft App ID for the bot."
+    api_field: msaAppId
+    location: properties
+  tags:
+    type: dict
+    description: "Resource tags."
+    location: tags

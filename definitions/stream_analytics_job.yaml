@@ -1,0 +1,70 @@
+name: StreamAnalyticsJob
+module_name: azure_rm_streamanalyticsjob
+description: "Manage Azure Stream Analytics jobs."
+api_version: "2021-10-01-preview"
+provider: Microsoft.StreamAnalytics
+resource_type: streamingjobs
+generate_info: true
+author: "Azure Magic Modules Generator"
+doc_url: "https://learn.microsoft.com/en-us/azure/stream-analytics/"
+properties:
+  name:
+    type: str
+    required: true
+    description: "Name of the Stream Analytics job."
+  resource_group:
+    type: str
+    required: true
+    description: "Name of the resource group."
+  location:
+    type: str
+    required: true
+    description: "Azure region."
+    api_field: location
+    location: body
+  sku_name:
+    type: str
+    description: "SKU name for the Stream Analytics job."
+    choices:
+      - Standard
+    api_field: sku.name
+    location: body
+  streaming_units:
+    type: int
+    description: "Number of streaming units for the job."
+    api_field: transformation.streamingUnits
+    location: body
+  compatibility_level:
+    type: str
+    description: "Compatibility level for the job query language."
+    choices:
+      - "1.0"
+      - "1.1"
+      - "1.2"
+    api_field: compatibilityLevel
+    location: body
+  output_error_policy:
+    type: str
+    description: "Policy for handling output data errors."
+    choices:
+      - Stop
+      - Drop
+    api_field: outputErrorPolicy
+    location: body
+  events_out_of_order_policy:
+    type: str
+    description: "Policy for handling out-of-order events."
+    choices:
+      - Adjust
+      - Drop
+    api_field: eventsOutOfOrderPolicy
+    location: body
+  events_out_of_order_max_delay_in_seconds:
+    type: int
+    description: "Max delay in seconds for out-of-order events."
+    api_field: eventsOutOfOrderMaxDelayInSeconds
+    location: body
+  tags:
+    type: dict
+    description: "Resource tags."
+    location: tags

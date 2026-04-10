@@ -1,0 +1,32 @@
+name: CosmosDbSqlDatabase
+module_name: azure_rm_cosmosdbsqldatabase
+description: "Manage Azure Cosmos DB SQL API databases."
+api_version: "2024-05-15"
+provider: Microsoft.DocumentDB
+resource_type: databaseAccounts/sqlDatabases
+generate_info: true
+author: "Azure Magic Modules Generator"
+doc_url: "https://learn.microsoft.com/en-us/azure/cosmos-db/nosql/how-to-create-container"
+properties:
+  name:
+    type: str
+    required: true
+    description: "Name of the SQL database."
+  resource_group:
+    type: str
+    required: true
+    description: "Name of the resource group."
+  account_name:
+    type: str
+    required: true
+    description: "Name of the parent Cosmos DB account."
+  throughput:
+    type: int
+    description: "Request units per second for the database."
+    api_field: throughput
+    location: properties
+  autoscale_max_throughput:
+    type: int
+    description: "Max throughput for autoscale in request units."
+    api_field: autoscaleMaxThroughput
+    location: properties

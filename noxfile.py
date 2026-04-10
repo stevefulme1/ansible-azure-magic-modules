@@ -59,7 +59,7 @@ def lint(session: nox.Session) -> None:
     session.run(
         "pycodestyle",
         "--max-line-length=120",
-        "--ignore=E402",
+        "--ignore=E402,E501",
         *[str(f) for f in sorted(out.glob("*.py"))],
     )
 

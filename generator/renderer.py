@@ -54,6 +54,23 @@ def _to_python(value: object) -> str:
     return repr(value)
 
 
+def _to_python_list(value: list, indent: int = 16) -> str:
+    """Render a Python list, using multi-line format when the single-line
+    representation would exceed 160 characters (ansible-test pep8 limit).
+    """
+    single = repr(value)
+    # Check if single-line would fit (indent + "choices=" + list + ",")
+    if indent + len("choices=") + len(single) + 1 <= 159:
+        return single
+    # Multi-line format
+    pad = " " * indent
+    lines = ["["]
+    for item in value:
+        lines.append(f"{pad}    {repr(item)},")
+    lines.append(f"{pad}]")
+    return ("\n").join(lines)
+
+
 def _ansible_type_str(value: str) -> str:
     """Map internal type names to the string used in Ansible ``DOCUMENTATION``.
 
@@ -81,6 +98,7 @@ class ModuleRenderer:
         self.env.filters["snake_to_pascal"] = _snake_to_pascal
         self.env.filters["ansible_type_str"] = _ansible_type_str
         self.env.filters["to_python"] = _to_python
+        self.env.filters["to_python_list"] = _to_python_list
 
     def render_module(self, definition: ResourceDefinition) -> str:
         """Render the main CRUD module source."""

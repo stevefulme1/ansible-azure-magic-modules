@@ -1,0 +1,45 @@
+name: StorageFileShare
+module_name: azure_rm_storagefileshare
+description: "Manage Azure Storage File Share instances."
+api_version: "2023-05-01"
+provider: Microsoft.Storage
+resource_type: storageAccounts/fileServices/shares
+generate_info: true
+author: "Azure Magic Modules Generator"
+doc_url: "https://learn.microsoft.com/en-us/azure/storage/files/storage-files-introduction"
+properties:
+  name:
+    type: str
+    required: true
+    description: "Name of the file share."
+  resource_group:
+    type: str
+    required: true
+    description: "Name of the resource group."
+  account_name:
+    type: str
+    required: true
+    description: "Name of the storage account."
+  share_quota:
+    type: int
+    description: "Maximum size of the share in GB."
+    api_field: shareQuota
+    location: body
+  access_tier:
+    type: str
+    description: "Access tier for the file share."
+    choices:
+      - TransactionOptimized
+      - Hot
+      - Cool
+      - Premium
+    api_field: accessTier
+    location: body
+  enabled_protocols:
+    type: str
+    description: "Enabled protocols for the file share."
+    choices:
+      - SMB
+      - NFS
+    api_field: enabledProtocols
+    location: body

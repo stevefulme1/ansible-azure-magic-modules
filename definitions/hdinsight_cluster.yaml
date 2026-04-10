@@ -1,0 +1,87 @@
+name: HDInsightCluster
+module_name: azure_rm_hdinsightcluster
+description: "Manage Azure HDInsight clusters."
+api_version: "2021-06-01"
+provider: Microsoft.HDInsight
+resource_type: clusters
+generate_info: true
+author: "Azure Magic Modules Generator"
+doc_url: "https://learn.microsoft.com/en-us/azure/hdinsight/"
+properties:
+  name:
+    type: str
+    required: true
+    description: "Name of the HDInsight cluster."
+  resource_group:
+    type: str
+    required: true
+    description: "Name of the resource group."
+  location:
+    type: str
+    required: true
+    description: "Azure region."
+    api_field: location
+    location: body
+  cluster_version:
+    type: str
+    description: "HDInsight cluster version."
+    api_field: clusterVersion
+    location: body
+  os_type:
+    type: str
+    description: "Operating system type for the cluster."
+    choices:
+      - Linux
+    api_field: osType
+    location: body
+  tier:
+    type: str
+    description: "Cluster tier."
+    choices:
+      - Standard
+      - Premium
+    api_field: tier
+    location: body
+  kind:
+    type: str
+    description: "Type of HDInsight cluster."
+    choices:
+      - hadoop
+      - hbase
+      - storm
+      - spark
+      - interactivehive
+      - kafka
+      - rserver
+      - mlservices
+    api_field: kind
+    location: body
+  gateway_username:
+    type: str
+    description: "Gateway HTTP username for the cluster."
+    api_field: gateway.restAuthCredential.username
+    location: body
+  gateway_password:
+    type: str
+    description: "Gateway HTTP password for the cluster."
+    api_field: gateway.restAuthCredential.password
+    location: body
+  head_node_vm_size:
+    type: str
+    description: "VM size for the head nodes."
+    api_field: computeProfile.roles.headnode.hardwareProfile.vmSize
+    location: body
+  worker_node_vm_size:
+    type: str
+    description: "VM size for the worker nodes."
+    api_field: computeProfile.roles.workernode.hardwareProfile.vmSize
+    location: body
+  worker_node_count:
+    type: int
+    description: "Number of worker nodes in the cluster."
+    api_field: computeProfile.roles.workernode.targetInstanceCount
+    location: body
+  tags:
+    type: dict
+    description: "Resource tags."
+    location: tags

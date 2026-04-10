@@ -1,0 +1,57 @@
+name: OpenAIDeployment
+module_name: azure_rm_openai_deployment
+description: "Manage Azure OpenAI model deployments."
+api_version: "2023-05-01"
+provider: Microsoft.CognitiveServices
+resource_type: accounts/deployments
+generate_info: true
+author: "Azure Magic Modules Generator"
+doc_url: "https://learn.microsoft.com/en-us/azure/ai-services/openai/"
+
+properties:
+  name:
+    type: str
+    required: true
+    description: "Name of the deployment."
+  resource_group:
+    type: str
+    required: true
+    description: "Name of the resource group."
+  account_name:
+    type: str
+    required: true
+    description: "Name of the Cognitive Services account."
+  model_name:
+    type: str
+    required: true
+    description: "Name of the model to deploy."
+    api_field: model.name
+    location: properties
+  model_version:
+    type: str
+    required: true
+    description: "Version of the model to deploy."
+    api_field: model.version
+    location: properties
+  model_format:
+    type: str
+    description: "Format of the model."
+    api_field: model.format
+    location: properties
+    default: "OpenAI"
+  sku_name:
+    type: str
+    description: "SKU name for the deployment."
+    api_field: sku.name
+    location: body
+    default: "Standard"
+  sku_capacity:
+    type: int
+    description: "SKU capacity in thousands of tokens per minute."
+    api_field: sku.capacity
+    location: body
+  rai_policy_name:
+    type: str
+    description: "Name of the RAI policy to apply."
+    api_field: raiPolicyName
+    location: properties

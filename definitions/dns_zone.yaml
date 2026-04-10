@@ -1,0 +1,37 @@
+name: DnsZone
+module_name: azure_rm_dnszone
+description: "Manage Azure DNS zones."
+api_version: "2024-03-01"
+provider: Microsoft.Network
+resource_type: dnsZones
+generate_info: true
+author: "Azure Magic Modules Generator"
+doc_url: "https://learn.microsoft.com/en-us/azure/dns/dns-zones-records"
+properties:
+  name:
+    type: str
+    required: true
+    description: "Name of the DNS zone."
+  resource_group:
+    type: str
+    required: true
+    description: "Name of the resource group."
+  location:
+    type: str
+    required: true
+    description: "Azure region."
+    api_field: location
+    location: body
+    default: "global"
+  zone_type:
+    type: str
+    description: "Type of the DNS zone."
+    api_field: zoneType
+    location: body
+    choices:
+      - Public
+      - Private
+  tags:
+    type: dict
+    description: "Resource tags."
+    location: tags

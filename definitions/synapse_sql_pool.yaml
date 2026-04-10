@@ -1,0 +1,70 @@
+name: SynapseSqlPool
+module_name: azure_rm_synapsesqlpool
+description: "Manage Azure Synapse Analytics SQL pools."
+api_version: "2021-06-01"
+provider: Microsoft.Synapse
+resource_type: workspaces/sqlPools
+generate_info: true
+author: "Azure Magic Modules Generator"
+doc_url: "https://learn.microsoft.com/en-us/azure/synapse-analytics/sql-data-warehouse/"
+properties:
+  name:
+    type: str
+    required: true
+    description: "Name of the SQL pool."
+  resource_group:
+    type: str
+    required: true
+    description: "Name of the resource group."
+  workspace_name:
+    type: str
+    required: true
+    description: "Name of the parent Synapse workspace."
+  location:
+    type: str
+    required: true
+    description: "Azure region."
+    api_field: location
+    location: body
+  sku_name:
+    type: str
+    description: "SKU name for the SQL pool performance level."
+    choices:
+      - DW100c
+      - DW200c
+      - DW300c
+      - DW400c
+      - DW500c
+      - DW1000c
+      - DW1500c
+      - DW2000c
+      - DW2500c
+      - DW3000c
+      - DW5000c
+      - DW6000c
+      - DW7500c
+      - DW10000c
+      - DW15000c
+      - DW30000c
+    api_field: sku.name
+    location: body
+  collation:
+    type: str
+    description: "Database collation for the SQL pool."
+    default: "SQL_Latin1_General_CP1_CI_AS"
+    api_field: collation
+    location: body
+  create_mode:
+    type: str
+    description: "Specifies the mode of SQL pool creation."
+    choices:
+      - Default
+      - Recovery
+      - PointInTimeRestore
+      - Restore
+    api_field: createMode
+    location: body
+  tags:
+    type: dict
+    description: "Resource tags."
+    location: tags

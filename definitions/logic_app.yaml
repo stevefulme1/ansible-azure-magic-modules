@@ -1,0 +1,51 @@
+name: LogicApp
+module_name: azure_rm_logicapp
+description: "Manage Azure Logic App workflow instances."
+api_version: "2019-05-01"
+provider: Microsoft.Logic
+resource_type: workflows
+generate_info: true
+author: "Azure Magic Modules Generator"
+doc_url: "https://learn.microsoft.com/en-us/azure/logic-apps/logic-apps-overview"
+properties:
+  name:
+    type: str
+    required: true
+    description: "Name of the Logic App workflow."
+  resource_group:
+    type: str
+    required: true
+    description: "Name of the resource group."
+  location:
+    type: str
+    required: true
+    description: "Azure region."
+    api_field: location
+    location: body
+  workflow_state:
+    type: str
+    description: "State of the Logic App workflow."
+    api_field: state
+    location: body
+    choices:
+      - Enabled
+      - Disabled
+  definition:
+    type: dict
+    description: "Workflow definition in JSON format."
+    api_field: definition
+    location: body
+  parameters:
+    type: dict
+    description: "Workflow parameters."
+    api_field: parameters
+    location: body
+  integration_service_environment_id:
+    type: str
+    description: "Resource ID of the integration service environment."
+    api_field: integrationServiceEnvironment.id
+    location: body
+  tags:
+    type: dict
+    description: "Resource tags."
+    location: tags

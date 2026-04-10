@@ -1,0 +1,61 @@
+name: RoleDefinition
+module_name: azure_rm_roledefinition
+description: "Manage Azure custom role definitions."
+api_version: "2022-04-01"
+provider: Microsoft.Authorization
+resource_type: roleDefinitions
+generate_info: true
+author: "Azure Magic Modules Generator"
+doc_url: "https://learn.microsoft.com/en-us/azure/role-based-access-control/custom-roles"
+properties:
+  name:
+    type: str
+    required: true
+    description: "A GUID that identifies the role definition."
+  scope:
+    type: str
+    required: true
+    description: "The scope of the role definition."
+    api_field: scope
+    location: body
+  role_name:
+    type: str
+    required: true
+    description: "The display name of the role definition."
+    api_field: roleName
+    location: properties
+  description:
+    type: str
+    description: "Description of the role definition."
+    api_field: description
+    location: properties
+  permissions_actions:
+    type: list
+    element_type: str
+    description: "Allowed actions for the role."
+    api_field: permissions[0].actions
+    location: properties
+  permissions_not_actions:
+    type: list
+    element_type: str
+    description: "Denied actions for the role."
+    api_field: permissions[0].notActions
+    location: properties
+  permissions_data_actions:
+    type: list
+    element_type: str
+    description: "Allowed data actions for the role."
+    api_field: permissions[0].dataActions
+    location: properties
+  permissions_not_data_actions:
+    type: list
+    element_type: str
+    description: "Denied data actions for the role."
+    api_field: permissions[0].notDataActions
+    location: properties
+  assignable_scopes:
+    type: list
+    element_type: str
+    description: "Scopes where the role can be assigned."
+    api_field: assignableScopes
+    location: properties

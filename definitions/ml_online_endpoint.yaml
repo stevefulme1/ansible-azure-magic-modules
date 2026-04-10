@@ -1,0 +1,53 @@
+name: MachineLearningOnlineEndpoint
+module_name: azure_rm_mlonlineendpoint
+description: "Manage Azure Machine Learning online endpoints."
+api_version: "2023-10-01"
+provider: Microsoft.MachineLearningServices
+resource_type: workspaces/onlineEndpoints
+generate_info: true
+author: "Azure Magic Modules Generator"
+doc_url: "https://learn.microsoft.com/en-us/azure/machine-learning/concept-endpoints-online"
+
+properties:
+  name:
+    type: str
+    required: true
+    description: "Name of the online endpoint."
+  resource_group:
+    type: str
+    required: true
+    description: "Name of the resource group."
+  workspace_name:
+    type: str
+    required: true
+    description: "Name of the Machine Learning workspace."
+  location:
+    type: str
+    required: true
+    description: "Azure region."
+    api_field: location
+    location: body
+  auth_mode:
+    type: str
+    required: true
+    description: "Authentication mode for the endpoint."
+    api_field: authMode
+    location: properties
+    choices:
+      - Key
+      - AMLToken
+      - AADToken
+  description:
+    type: str
+    description: "Description of the online endpoint."
+    api_field: description
+    location: properties
+  traffic:
+    type: dict
+    description: "Traffic routing percentages across deployments."
+    api_field: traffic
+    location: properties
+  tags:
+    type: dict
+    description: "Resource tags."
+    location: tags

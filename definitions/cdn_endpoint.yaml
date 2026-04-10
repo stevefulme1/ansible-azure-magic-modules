@@ -1,0 +1,74 @@
+name: CdnEndpoint
+module_name: azure_rm_cdnendpoint
+description: "Manage Azure CDN Endpoint instances."
+api_version: "2024-02-01"
+provider: Microsoft.Cdn
+resource_type: profiles/endpoints
+generate_info: true
+author: "Azure Magic Modules Generator"
+doc_url: "https://learn.microsoft.com/en-us/azure/cdn/cdn-create-endpoint-how-to"
+properties:
+  name:
+    type: str
+    required: true
+    description: "Name of the CDN Endpoint."
+  resource_group:
+    type: str
+    required: true
+    description: "Name of the resource group."
+  profile_name:
+    type: str
+    required: true
+    description: "Name of the CDN Profile."
+  location:
+    type: str
+    required: true
+    description: "Azure region."
+    api_field: location
+    location: body
+  origin_host_name:
+    type: str
+    description: "Hostname of the origin."
+    api_field: origins.hostName
+    location: body
+  origin_path:
+    type: str
+    description: "Path on the origin to retrieve content from."
+    api_field: originPath
+    location: body
+  is_http_allowed:
+    type: bool
+    description: "Whether HTTP traffic is allowed."
+    api_field: isHttpAllowed
+    location: body
+    default: true
+  is_https_allowed:
+    type: bool
+    description: "Whether HTTPS traffic is allowed."
+    api_field: isHttpsAllowed
+    location: body
+    default: true
+  is_compression_enabled:
+    type: bool
+    description: "Whether content compression is enabled."
+    api_field: isCompressionEnabled
+    location: body
+  content_types_to_compress:
+    type: list
+    description: "List of content types to compress."
+    api_field: contentTypesToCompress
+    location: body
+  query_string_caching_behavior:
+    type: str
+    description: "Query string caching behavior."
+    api_field: queryStringCachingBehavior
+    location: body
+    choices:
+      - IgnoreQueryString
+      - BypassCaching
+      - UseQueryString
+      - NotSet
+  tags:
+    type: dict
+    description: "Resource tags."
+    location: tags

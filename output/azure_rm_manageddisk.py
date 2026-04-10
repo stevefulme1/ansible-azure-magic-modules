@@ -161,19 +161,19 @@ class AzureRMManagedDisk(AzureRMModuleBase):
             ),
             sku=dict(
                 type='str',
-                choices=["Standard_LRS", "Premium_LRS", "StandardSSD_LRS", "UltraSSD_LRS", "Premium_ZRS"],
+                choices=['Standard_LRS', 'Premium_LRS', 'StandardSSD_LRS', 'UltraSSD_LRS', 'Premium_ZRS'],
             ),
             create_option=dict(
                 type='str',
                 default='Empty',
-                choices=["Empty", "Copy", "Import", "FromImage"],
+                choices=['Empty', 'Copy', 'Import', 'FromImage'],
             ),
             source_uri=dict(
                 type='str',
             ),
             os_type=dict(
                 type='str',
-                choices=["Linux", "Windows"],
+                choices=['Linux', 'Windows'],
             ),
             zone=dict(
                 type='str',

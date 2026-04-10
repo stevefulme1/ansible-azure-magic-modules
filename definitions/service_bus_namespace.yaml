@@ -1,0 +1,61 @@
+name: ServiceBusNamespace
+module_name: azure_rm_servicebusnamespace
+description: "Manage Azure Service Bus Namespace instances."
+api_version: "2022-10-01-preview"
+provider: Microsoft.ServiceBus
+resource_type: namespaces
+generate_info: true
+author: "Azure Magic Modules Generator"
+doc_url: "https://learn.microsoft.com/en-us/azure/service-bus-messaging/service-bus-messaging-overview"
+properties:
+  name:
+    type: str
+    required: true
+    description: "Name of the Service Bus Namespace."
+  resource_group:
+    type: str
+    required: true
+    description: "Name of the resource group."
+  location:
+    type: str
+    required: true
+    description: "Azure region."
+    api_field: location
+    location: body
+  sku_name:
+    type: str
+    description: "SKU name of the Service Bus Namespace."
+    api_field: sku.name
+    location: body
+    choices:
+      - Basic
+      - Standard
+      - Premium
+  sku_capacity:
+    type: int
+    description: "SKU capacity for Premium tier (1, 2, 4, 8, or 16)."
+    api_field: sku.capacity
+    location: body
+  zone_redundant:
+    type: bool
+    description: "Whether the namespace is zone redundant."
+    api_field: zoneRedundant
+    location: body
+  disable_local_auth:
+    type: bool
+    description: "Whether to disable local authentication."
+    api_field: disableLocalAuth
+    location: body
+  minimum_tls_version:
+    type: str
+    description: "Minimum TLS version for the namespace."
+    api_field: minimumTlsVersion
+    location: body
+    choices:
+      - "1.0"
+      - "1.1"
+      - "1.2"
+  tags:
+    type: dict
+    description: "Resource tags."
+    location: tags

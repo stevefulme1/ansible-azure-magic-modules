@@ -1,0 +1,50 @@
+name: PrivateEndpoint
+module_name: azure_rm_privateendpoint
+description: "Manage Azure private endpoints."
+api_version: "2024-03-01"
+provider: Microsoft.Network
+resource_type: privateEndpoints
+generate_info: true
+author: "Azure Magic Modules Generator"
+doc_url: "https://learn.microsoft.com/en-us/azure/private-link/private-endpoint-overview"
+properties:
+  name:
+    type: str
+    required: true
+    description: "Name of the private endpoint."
+  resource_group:
+    type: str
+    required: true
+    description: "Name of the resource group."
+  location:
+    type: str
+    required: true
+    description: "Azure region."
+    api_field: location
+    location: body
+  subnet_id:
+    type: str
+    description: "Resource ID of the subnet for the private endpoint."
+    api_field: subnet.id
+    location: body
+  private_link_service_id:
+    type: str
+    description: "Resource ID of the private link service to connect to."
+    api_field: privateLinkServiceConnections[0].privateLinkServiceId
+    location: body
+  group_ids:
+    type: list
+    description: "List of group IDs for the private link service."
+    api_field: privateLinkServiceConnections[0].groupIds
+    location: body
+    element:
+      type: str
+  request_message:
+    type: str
+    description: "Approval request message for the connection."
+    api_field: privateLinkServiceConnections[0].requestMessage
+    location: body
+  tags:
+    type: dict
+    description: "Resource tags."
+    location: tags

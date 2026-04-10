@@ -174,17 +174,17 @@ class AzureRMNetworkSecurityGroup(AzureRMModuleBase):
                     direction=dict(
                         type='str',
                         required=True,
-                        choices=["Inbound", "Outbound"],
+                        choices=['Inbound', 'Outbound'],
                     ),
                     access=dict(
                         type='str',
                         required=True,
-                        choices=["Allow", "Deny"],
+                        choices=['Allow', 'Deny'],
                     ),
                     protocol=dict(
                         type='str',
                         required=True,
-                        choices=["Tcp", "Udp", "Icmp", "*"],
+                        choices=['Tcp', 'Udp', 'Icmp', '*'],
                     ),
                     source_address_prefix=dict(
                         type='str',

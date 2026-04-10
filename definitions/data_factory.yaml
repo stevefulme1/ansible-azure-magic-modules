@@ -1,0 +1,72 @@
+name: DataFactory
+module_name: azure_rm_datafactory
+description: "Manage Azure Data Factory instances."
+api_version: "2018-06-01"
+provider: Microsoft.DataFactory
+resource_type: factories
+generate_info: true
+author: "Azure Magic Modules Generator"
+doc_url: "https://learn.microsoft.com/en-us/azure/data-factory/"
+properties:
+  name:
+    type: str
+    required: true
+    description: "Name of the Data Factory."
+  resource_group:
+    type: str
+    required: true
+    description: "Name of the resource group."
+  location:
+    type: str
+    required: true
+    description: "Azure region."
+    api_field: location
+    location: body
+  repo_type:
+    type: str
+    description: "Type of repository configuration."
+    choices:
+      - FactoryVSTSConfiguration
+      - FactoryGitHubConfiguration
+    api_field: repoConfiguration.type
+    location: body
+  repo_account_name:
+    type: str
+    description: "Repository account name."
+    api_field: repoConfiguration.accountName
+    location: body
+  repo_repository_name:
+    type: str
+    description: "Repository name."
+    api_field: repoConfiguration.repositoryName
+    location: body
+  repo_collaboration_branch:
+    type: str
+    description: "Collaboration branch name."
+    api_field: repoConfiguration.collaborationBranch
+    location: body
+  repo_root_folder:
+    type: str
+    description: "Root folder path in the repository."
+    api_field: repoConfiguration.rootFolder
+    location: body
+  identity_type:
+    type: str
+    description: "Type of managed identity."
+    choices:
+      - SystemAssigned
+      - UserAssigned
+    api_field: identity.type
+    location: body
+  public_network_access:
+    type: str
+    description: "Whether public network access is allowed."
+    choices:
+      - Enabled
+      - Disabled
+    api_field: publicNetworkAccess
+    location: body
+  tags:
+    type: dict
+    description: "Resource tags."
+    location: tags

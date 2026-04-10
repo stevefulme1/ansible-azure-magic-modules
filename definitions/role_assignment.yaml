@@ -1,0 +1,55 @@
+name: RoleAssignment
+module_name: azure_rm_roleassignment
+description: "Manage Azure role assignments."
+api_version: "2022-04-01"
+provider: Microsoft.Authorization
+resource_type: roleAssignments
+generate_info: true
+author: "Azure Magic Modules Generator"
+doc_url: "https://learn.microsoft.com/en-us/azure/role-based-access-control/"
+properties:
+  name:
+    type: str
+    required: true
+    description: "A GUID that identifies the role assignment."
+  scope:
+    type: str
+    required: true
+    description: "The scope for the role assignment."
+    api_field: scope
+    location: body
+  role_definition_id:
+    type: str
+    required: true
+    description: "The fully qualified role definition ID."
+    api_field: roleDefinitionId
+    location: properties
+  principal_id:
+    type: str
+    required: true
+    description: "The principal ID of the assignee."
+    api_field: principalId
+    location: properties
+  principal_type:
+    type: str
+    description: "The type of the principal."
+    api_field: principalType
+    location: properties
+    choices:
+      - User
+      - Group
+      - ServicePrincipal
+      - ForeignGroup
+      - Device
+  condition:
+    type: str
+    description: "Conditions for the role assignment."
+    api_field: condition
+    location: properties
+  condition_version:
+    type: str
+    description: "Version of the condition syntax."
+    api_field: conditionVersion
+    location: properties
+    choices:
+      - "2.0"

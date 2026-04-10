@@ -1,0 +1,61 @@
+name: IoTHubDps
+module_name: azure_rm_iothubdps
+description: "Manage Azure IoT Hub Device Provisioning Service."
+api_version: "2022-02-05"
+provider: Microsoft.Devices
+resource_type: provisioningServices
+generate_info: true
+author: "Azure Magic Modules Generator"
+doc_url: "https://learn.microsoft.com/en-us/azure/iot-dps/"
+properties:
+  name:
+    type: str
+    required: true
+    description: "Name of the Device Provisioning Service."
+  resource_group:
+    type: str
+    required: true
+    description: "Name of the resource group."
+  location:
+    type: str
+    required: true
+    description: "Azure region."
+    api_field: location
+    location: body
+  sku_name:
+    type: str
+    description: "SKU name for the provisioning service."
+    choices:
+      - S1
+    api_field: sku.name
+    location: body
+  sku_capacity:
+    type: int
+    description: "Number of units for the provisioning service."
+    api_field: sku.capacity
+    location: body
+  allocation_policy:
+    type: str
+    description: "Allocation policy for the provisioning service."
+    choices:
+      - Hashed
+      - GeoLatency
+      - Static
+    api_field: allocationPolicy
+    location: body
+  iot_hubs:
+    type: list
+    description: "List of linked IoT Hubs."
+    suboptions:
+      connection_string:
+        type: str
+        description: "Connection string of the linked IoT Hub."
+      location:
+        type: str
+        description: "Azure region of the linked IoT Hub."
+    api_field: iotHubs
+    location: body
+  tags:
+    type: dict
+    description: "Resource tags."
+    location: tags

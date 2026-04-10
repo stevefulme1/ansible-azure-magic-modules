@@ -1,0 +1,50 @@
+name: DiskEncryptionSet
+module_name: azure_rm_diskencryptionset
+description: "Manage Azure disk encryption set instances."
+api_version: "2024-03-02"
+provider: Microsoft.Compute
+resource_type: diskEncryptionSets
+generate_info: true
+author: "Azure Magic Modules Generator"
+doc_url: "https://learn.microsoft.com/en-us/azure/virtual-machines/disk-encryption"
+properties:
+  name:
+    type: str
+    required: true
+    description: "Name of the disk encryption set."
+  resource_group:
+    type: str
+    required: true
+    description: "Name of the resource group."
+  location:
+    type: str
+    required: true
+    description: "Azure region."
+    api_field: location
+    location: body
+  encryption_type:
+    type: str
+    description: "Type of encryption for the disk encryption set."
+    api_field: encryptionType
+    location: body
+    choices:
+      - EncryptionAtRestWithCustomerKey
+      - EncryptionAtRestWithPlatformAndCustomerKeys
+      - ConfidentialVmEncryptedWithCustomerKey
+  key_vault_key_url:
+    type: str
+    description: "URL of the key vault key for encryption."
+    api_field: activeKey.keyUrl
+    location: body
+  identity_type:
+    type: str
+    description: "Type of managed identity for the encryption set."
+    api_field: identity.type
+    location: body
+    choices:
+      - SystemAssigned
+      - UserAssigned
+  tags:
+    type: dict
+    description: "Resource tags."
+    location: tags

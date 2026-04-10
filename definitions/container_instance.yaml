@@ -1,0 +1,84 @@
+name: ContainerInstance
+module_name: azure_rm_containerinstance
+description: "Manage Azure Container Instance groups."
+api_version: "2023-05-01"
+provider: Microsoft.ContainerInstance
+resource_type: containerGroups
+generate_info: true
+author: "Azure Magic Modules Generator"
+doc_url: "https://learn.microsoft.com/en-us/azure/container-instances/"
+properties:
+  name:
+    type: str
+    required: true
+    description: "Name of the container group."
+  resource_group:
+    type: str
+    required: true
+    description: "Name of the resource group."
+  location:
+    type: str
+    required: true
+    description: "Azure region."
+    api_field: location
+    location: body
+  os_type:
+    type: str
+    description: "Operating system type for the container group."
+    api_field: osType
+    location: body
+    choices:
+      - Linux
+      - Windows
+  restart_policy:
+    type: str
+    description: "Restart policy for containers in the group."
+    api_field: restartPolicy
+    location: body
+    choices:
+      - Always
+      - OnFailure
+      - Never
+  ip_address_type:
+    type: str
+    description: "Type of IP address for the container group."
+    api_field: ipAddress.type
+    location: body
+    choices:
+      - Public
+      - Private
+      - None
+  dns_name_label:
+    type: str
+    description: "DNS name label for the container group."
+    api_field: ipAddress.dnsNameLabel
+    location: body
+  containers:
+    type: list
+    element_type: dict
+    description: "List of container definitions for the group."
+    api_field: containers
+    location: body
+    suboptions:
+      name:
+        type: str
+        description: "Name of the container."
+      image:
+        type: str
+        description: "Container image name."
+      cpu:
+        type: float
+        description: "Number of CPU cores for the container."
+      memory_gb:
+        type: float
+        description: "Memory in GB for the container."
+      ports:
+        type: list
+        description: "List of ports exposed by the container."
+      environment_variables:
+        type: dict
+        description: "Environment variables for the container."
+  tags:
+    type: dict
+    description: "Resource tags."
+    location: tags

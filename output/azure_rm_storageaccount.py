@@ -156,16 +156,16 @@ class AzureRMStorageAccount(AzureRMModuleBase):
             account_type=dict(
                 type='str',
                 required=True,
-                choices=["Standard_LRS", "Standard_GRS", "Standard_RAGRS", "Premium_LRS", "Standard_ZRS"],
+                choices=['Standard_LRS', 'Standard_GRS', 'Standard_RAGRS', 'Premium_LRS', 'Standard_ZRS'],
             ),
             kind=dict(
                 type='str',
                 default='StorageV2',
-                choices=["Storage", "StorageV2", "BlobStorage"],
+                choices=['Storage', 'StorageV2', 'BlobStorage'],
             ),
             access_tier=dict(
                 type='str',
-                choices=["Hot", "Cool"],
+                choices=['Hot', 'Cool'],
             ),
             https_only=dict(
                 type='bool',
@@ -174,7 +174,7 @@ class AzureRMStorageAccount(AzureRMModuleBase):
             minimum_tls_version=dict(
                 type='str',
                 default='TLS1_2',
-                choices=["TLS1_0", "TLS1_1", "TLS1_2"],
+                choices=['TLS1_0', 'TLS1_1', 'TLS1_2'],
             ),
             state=dict(type='str', default='present', choices=['present', 'absent']),
         )

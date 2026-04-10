@@ -1,0 +1,83 @@
+name: MariaDbServer
+module_name: azure_rm_mariadbserver
+description: "Manage Azure Database for MariaDB server instances."
+api_version: "2018-06-01"
+provider: Microsoft.DBforMariaDB
+resource_type: servers
+generate_info: true
+author: "Azure Magic Modules Generator"
+doc_url: "https://learn.microsoft.com/en-us/azure/mariadb/overview"
+properties:
+  name:
+    type: str
+    required: true
+    description: "Name of the MariaDB server."
+  resource_group:
+    type: str
+    required: true
+    description: "Name of the resource group."
+  location:
+    type: str
+    required: true
+    description: "Azure region."
+    api_field: location
+    location: body
+  sku_name:
+    type: str
+    description: "Name of the SKU for the server."
+    api_field: sku.name
+    location: body
+  sku_tier:
+    type: str
+    description: "Tier of the SKU for the server."
+    api_field: sku.tier
+    location: body
+  administrator_login:
+    type: str
+    description: "Administrator login name for the server."
+    api_field: administratorLogin
+    location: properties
+  administrator_login_password:
+    type: str
+    no_log: true
+    description: "Administrator login password for the server."
+    api_field: administratorLoginPassword
+    location: properties
+  version:
+    type: str
+    description: "MariaDB server version."
+    choices:
+      - "10.2"
+      - "10.3"
+    api_field: version
+    location: properties
+  storage_mb:
+    type: int
+    description: "Maximum storage allowed for the server in MB."
+    api_field: storageMB
+    location: properties
+  backup_retention_days:
+    type: int
+    description: "Backup retention period in days."
+    api_field: backupRetentionDays
+    location: properties
+  geo_redundant_backup:
+    type: str
+    description: "Whether geo-redundant backup is enabled."
+    choices:
+      - "Enabled"
+      - "Disabled"
+    api_field: geoRedundantBackup
+    location: properties
+  ssl_enforcement:
+    type: str
+    description: "Whether SSL enforcement is enabled."
+    choices:
+      - "Enabled"
+      - "Disabled"
+    api_field: sslEnforcement
+    location: properties
+  tags:
+    type: dict
+    description: "Resource tags."
+    location: tags

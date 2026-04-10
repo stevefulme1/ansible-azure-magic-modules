@@ -1,0 +1,78 @@
+name: FunctionApp
+module_name: azure_rm_functionapp
+description: "Manage Azure Function App instances."
+api_version: "2023-12-01"
+provider: Microsoft.Web
+resource_type: sites
+generate_info: true
+author: "Azure Magic Modules Generator"
+doc_url: "https://learn.microsoft.com/en-us/azure/azure-functions/functions-overview"
+properties:
+  name:
+    type: str
+    required: true
+    description: "Name of the Function App."
+  resource_group:
+    type: str
+    required: true
+    description: "Name of the resource group."
+  location:
+    type: str
+    required: true
+    description: "Azure region."
+    api_field: location
+    location: body
+  server_farm_id:
+    type: str
+    description: "Resource ID of the App Service Plan."
+    api_field: serverFarmId
+    location: body
+  kind:
+    type: str
+    description: "Kind of the Function App."
+    api_field: kind
+    location: body
+    default: functionapp
+  storage_account_name:
+    type: str
+    description: "Name of the storage account for the Function App."
+    api_field: siteConfig.appSettings.AzureWebJobsStorage
+    location: body
+  storage_account_access_key:
+    type: str
+    description: "Access key for the storage account."
+    api_field: siteConfig.appSettings.AzureWebJobsStorageKey
+    location: body
+  runtime_stack:
+    type: str
+    description: "Runtime stack for the Function App."
+    api_field: siteConfig.appSettings.FUNCTIONS_WORKER_RUNTIME
+    location: body
+    choices:
+      - dotnet
+      - node
+      - python
+      - java
+      - powershell
+      - custom
+  runtime_version:
+    type: str
+    description: "Runtime version for the Function App."
+    api_field: siteConfig.linuxFxVersion
+    location: body
+  functions_extension_version:
+    type: str
+    description: "Functions runtime extension version."
+    api_field: siteConfig.appSettings.FUNCTIONS_EXTENSION_VERSION
+    location: body
+    default: "~4"
+  https_only:
+    type: bool
+    description: "Whether the Function App only accepts HTTPS traffic."
+    api_field: httpsOnly
+    location: body
+    default: true
+  tags:
+    type: dict
+    description: "Resource tags."
+    location: tags

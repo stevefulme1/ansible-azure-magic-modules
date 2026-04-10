@@ -1,0 +1,58 @@
+name: PolicyDefinition
+module_name: azure_rm_policydefinition
+description: "Manage Azure Policy definitions."
+api_version: "2023-04-01"
+provider: Microsoft.Authorization
+resource_type: policyDefinitions
+generate_info: true
+author: "Azure Magic Modules Generator"
+doc_url: "https://learn.microsoft.com/en-us/azure/governance/policy/"
+properties:
+  name:
+    type: str
+    required: true
+    description: "Name of the policy definition."
+  display_name:
+    type: str
+    description: "The display name of the policy definition."
+    api_field: displayName
+    location: properties
+  description:
+    type: str
+    description: "Description of the policy definition."
+    api_field: description
+    location: properties
+  policy_type:
+    type: str
+    description: "The type of policy definition."
+    api_field: policyType
+    location: properties
+    choices:
+      - BuiltIn
+      - Custom
+      - NotSpecified
+      - Static
+  mode:
+    type: str
+    description: "The policy definition mode."
+    api_field: mode
+    location: properties
+    choices:
+      - All
+      - Indexed
+      - Microsoft.KeyVault.Data
+  policy_rule:
+    type: dict
+    description: "The policy rule JSON object."
+    api_field: policyRule
+    location: properties
+  parameters:
+    type: dict
+    description: "Parameter definitions for the policy."
+    api_field: parameters
+    location: properties
+  metadata:
+    type: dict
+    description: "Metadata for the policy definition."
+    api_field: metadata
+    location: properties

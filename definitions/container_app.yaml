@@ -1,0 +1,91 @@
+name: ContainerApp
+module_name: azure_rm_containerapp
+description: "Manage Azure Container App instances."
+api_version: "2024-03-01"
+provider: Microsoft.App
+resource_type: containerApps
+generate_info: true
+author: "Azure Magic Modules Generator"
+doc_url: "https://learn.microsoft.com/en-us/azure/container-apps/overview"
+properties:
+  name:
+    type: str
+    required: true
+    description: "Name of the Container App."
+  resource_group:
+    type: str
+    required: true
+    description: "Name of the resource group."
+  location:
+    type: str
+    required: true
+    description: "Azure region."
+    api_field: location
+    location: body
+  managed_environment_id:
+    type: str
+    description: "Resource ID of the managed environment."
+    api_field: managedEnvironmentId
+    location: body
+  revision_mode:
+    type: str
+    description: "Revision mode of the Container App."
+    choices:
+      - Single
+      - Multiple
+    api_field: configuration.activeRevisionsMode
+    location: body
+  ingress_external:
+    type: bool
+    description: "Whether ingress is exposed externally."
+    api_field: configuration.ingress.external
+    location: body
+  ingress_target_port:
+    type: int
+    description: "Target port for ingress traffic."
+    api_field: configuration.ingress.targetPort
+    location: body
+  ingress_transport:
+    type: str
+    description: "Transport protocol for ingress."
+    choices:
+      - auto
+      - http
+      - http2
+      - tcp
+    api_field: configuration.ingress.transport
+    location: body
+  container_name:
+    type: str
+    description: "Name of the container."
+    api_field: template.containers[0].name
+    location: body
+  container_image:
+    type: str
+    description: "Container image name and tag."
+    api_field: template.containers[0].image
+    location: body
+  container_cpu:
+    type: float
+    description: "CPU cores allocated to the container."
+    api_field: template.containers[0].resources.cpu
+    location: body
+  container_memory:
+    type: str
+    description: "Memory allocated to the container (e.g. 0.5Gi)."
+    api_field: template.containers[0].resources.memory
+    location: body
+  min_replicas:
+    type: int
+    description: "Minimum number of replicas."
+    api_field: template.scale.minReplicas
+    location: body
+  max_replicas:
+    type: int
+    description: "Maximum number of replicas."
+    api_field: template.scale.maxReplicas
+    location: body
+  tags:
+    type: dict
+    description: "Resource tags."
+    location: tags

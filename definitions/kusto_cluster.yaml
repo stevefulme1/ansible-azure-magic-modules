@@ -1,0 +1,94 @@
+name: KustoCluster
+module_name: azure_rm_kustocluster
+description: "Manage Azure Data Explorer (Kusto) clusters."
+api_version: "2023-08-15"
+provider: Microsoft.Kusto
+resource_type: clusters
+generate_info: true
+author: "Azure Magic Modules Generator"
+doc_url: "https://learn.microsoft.com/en-us/azure/data-explorer/"
+properties:
+  name:
+    type: str
+    required: true
+    description: "Name of the Kusto cluster."
+  resource_group:
+    type: str
+    required: true
+    description: "Name of the resource group."
+  location:
+    type: str
+    required: true
+    description: "Azure region."
+    api_field: location
+    location: body
+  sku_name:
+    type: str
+    description: "SKU name for the Kusto cluster."
+    choices:
+      - "Dev(No SLA)_Standard_D11_v2"
+      - Standard_D11_v2
+      - Standard_D12_v2
+      - Standard_D13_v2
+      - Standard_D14_v2
+      - Standard_DS13_v2+1TB_PS
+      - Standard_DS13_v2+2TB_PS
+      - Standard_DS14_v2+3TB_PS
+      - Standard_DS14_v2+4TB_PS
+      - Standard_L4s
+      - Standard_L8s
+      - Standard_L16s
+      - Standard_L8s_v2
+      - Standard_L16s_v2
+      - Standard_L8as_v3
+      - Standard_L16as_v3
+    api_field: sku.name
+    location: body
+  sku_tier:
+    type: str
+    description: "SKU tier for the Kusto cluster."
+    choices:
+      - Basic
+      - Standard
+    api_field: sku.tier
+    location: body
+  sku_capacity:
+    type: int
+    description: "Number of instances in the Kusto cluster."
+    api_field: sku.capacity
+    location: body
+  enable_streaming_ingest:
+    type: bool
+    description: "Whether streaming ingestion is enabled."
+    api_field: enableStreamingIngest
+    location: body
+  enable_purge:
+    type: bool
+    description: "Whether data purge is enabled."
+    api_field: enablePurge
+    location: body
+  enable_double_encryption:
+    type: bool
+    description: "Whether double encryption is enabled."
+    api_field: enableDoubleEncryption
+    location: body
+  engine_type:
+    type: str
+    description: "Engine type for the Kusto cluster."
+    choices:
+      - V2
+      - V3
+    api_field: engineType
+    location: body
+  identity_type:
+    type: str
+    description: "Type of managed identity."
+    choices:
+      - SystemAssigned
+      - UserAssigned
+    api_field: identity.type
+    location: body
+  tags:
+    type: dict
+    description: "Resource tags."
+    location: tags

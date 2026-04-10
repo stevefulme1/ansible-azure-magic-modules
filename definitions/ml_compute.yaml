@@ -1,0 +1,66 @@
+name: MachineLearningCompute
+module_name: azure_rm_mlcompute
+description: "Manage Azure Machine Learning compute resources."
+api_version: "2023-10-01"
+provider: Microsoft.MachineLearningServices
+resource_type: workspaces/computes
+generate_info: true
+author: "Azure Magic Modules Generator"
+doc_url: "https://learn.microsoft.com/en-us/azure/machine-learning/concept-compute-target"
+
+properties:
+  name:
+    type: str
+    required: true
+    description: "Name of the compute resource."
+  resource_group:
+    type: str
+    required: true
+    description: "Name of the resource group."
+  workspace_name:
+    type: str
+    required: true
+    description: "Name of the Machine Learning workspace."
+  compute_type:
+    type: str
+    required: true
+    description: "Type of compute resource."
+    api_field: computeType
+    location: properties
+    choices:
+      - AmlCompute
+      - ComputeInstance
+      - VirtualMachine
+      - Databricks
+      - HDInsight
+      - Kubernetes
+  vm_size:
+    type: str
+    description: "Size of the virtual machine."
+    api_field: properties.vmSize
+    location: properties
+  min_node_count:
+    type: int
+    description: "Minimum number of nodes for autoscaling."
+    api_field: properties.scaleSettings.minNodeCount
+    location: properties
+  max_node_count:
+    type: int
+    description: "Maximum number of nodes for autoscaling."
+    api_field: properties.scaleSettings.maxNodeCount
+    location: properties
+  idle_seconds_before_scaledown:
+    type: int
+    description: "Idle time in seconds before scaling down."
+    api_field: properties.scaleSettings.nodeIdleTimeBeforeScaleDown
+    location: properties
+  admin_username:
+    type: str
+    description: "Admin username for the compute resource."
+    api_field: properties.adminUserName
+    location: properties
+  admin_user_ssh_public_key:
+    type: str
+    description: "SSH public key for admin user authentication."
+    api_field: properties.adminUserSshPublicKey
+    location: properties
