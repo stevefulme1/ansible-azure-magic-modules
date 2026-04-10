@@ -157,8 +157,14 @@ def sanity(session: nox.Session) -> None:
 @nox.session(python="3.12")
 def tests(session: nox.Session) -> None:
     """Run the pytest test suite."""
-    session.install("jinja2>=3.1", "pyyaml>=6.0", "pytest>=8.0")
-    session.run("pytest", "tests/", "-v", *session.posargs)
+    session.install("jinja2>=3.1", "pyyaml>=6.0", "pytest>=8.0", "pytest-cov>=5.0")
+    session.run(
+        "pytest", "tests/", "-v",
+        "--cov=generator",
+        "--cov-report=term-missing",
+        "--cov-report=xml:coverage.xml",
+        *session.posargs,
+    )
 
 
 @nox.session(python="3.12")

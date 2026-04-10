@@ -5,3 +5,6 @@ dist/
 build/
 .venv/
 .nox/
+coverage.xml
+.coverage
+htmlcov/

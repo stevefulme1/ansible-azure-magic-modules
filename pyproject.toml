@@ -13,6 +13,7 @@ dependencies = ["jinja2>=3.1", "pyyaml>=6.0"]
 dev = [
     "nox>=2024.3",
     "pytest>=8.0",
+    "pytest-cov>=5.0",
     "ansible-core>=2.16",
     "ansible-lint>=24.2",
     "pycodestyle>=2.11",
