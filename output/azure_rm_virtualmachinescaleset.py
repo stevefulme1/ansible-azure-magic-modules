@@ -59,6 +59,7 @@ options:
         description:
             - Administrator password for scale set instances.
         type: str
+        no_log: true
     image_publisher:
         description:
             - Publisher of the VM image.
@@ -96,6 +97,7 @@ options:
         description:
             - List of availability zones for the scale set.
         type: list
+        elements: str
     state:
         description:
             - Assert the state of the virtualmachinescaleset.
@@ -163,9 +165,6 @@ state:
         admin_username:
             description: Administrator username for scale set instances.
             type: str
-        admin_password:
-            description: Administrator password for scale set instances.
-            type: str
         image_publisher:
             description: Publisher of the VM image.
             type: str
@@ -221,6 +220,7 @@ class AzureRMVirtualMachineScaleSet(AzureRMModuleBase):
             ),
             admin_password=dict(
                 type='str',
+                no_log=True,
             ),
             image_publisher=dict(
                 type='str',
@@ -247,6 +247,7 @@ class AzureRMVirtualMachineScaleSet(AzureRMModuleBase):
             ),
             zones=dict(
                 type='list',
+                elements='str',
             ),
             state=dict(type='str', default='present', choices=['present', 'absent']),
         )
@@ -313,19 +314,32 @@ class AzureRMVirtualMachineScaleSet(AzureRMModuleBase):
                     self.results['changed'] = True
 
                 if self.results['changed']:
+                    if self._diff:
+                        self.results['diff'] = dict(
+                            before=self.format_response(response),
+                            after=body,
+                        )
                     if not self.check_mode:
                         response = self.create_or_update(resource_group, name, body)
-                else:
-                    response = response
             else:
                 if self.tags:
                     body['tags'] = self.tags
+                if self._diff:
+                    self.results['diff'] = dict(
+                        before={},
+                        after=body,
+                    )
                 if not self.check_mode:
                     response = self.create_or_update(resource_group, name, body)
                 self.results['changed'] = True
 
         elif self.state == 'absent':
             if response:
+                if self._diff:
+                    self.results['diff'] = dict(
+                        before=self.format_response(response),
+                        after={},
+                    )
                 if not self.check_mode:
                     self.delete_resource(resource_group, name)
                 self.results['changed'] = True
@@ -513,7 +527,12 @@ class AzureRMVirtualMachineScaleSet(AzureRMModuleBase):
                 None, None, [200], 0, 0,
             )
             return self.deserialize_response(response)
-        except Exception:
+        except Exception as exc:
+            self.log(f"Error getting resource: {exc}")
+            if hasattr(exc, 'status_code') and exc.status_code == 404:
+                return None
+            if '404' in str(exc) or 'NotFound' in str(exc) or 'ResourceNotFound' in str(exc):
+                return None
             return None
 
     def create_or_update(self, resource_group, name, body):
@@ -521,7 +540,7 @@ class AzureRMVirtualMachineScaleSet(AzureRMModuleBase):
         response = self.mgmt_client.query(
             url, "PUT",
             {'api-version': '2024-03-01'},
-            None, body, [200, 201], 0, 0,
+            None, body, [200, 201], 600, 30,
         )
         return self.deserialize_response(response)
 
@@ -530,7 +549,7 @@ class AzureRMVirtualMachineScaleSet(AzureRMModuleBase):
         self.mgmt_client.query(
             url, "DELETE",
             {'api-version': '2024-03-01'},
-            None, None, [200, 202, 204], 0, 0,
+            None, None, [200, 202, 204], 600, 30,
         )
 
     def get_resource_url(self):
@@ -567,10 +586,6 @@ class AzureRMVirtualMachineScaleSet(AzureRMModuleBase):
         _body = _body.get('virtualMachineProfile', {}) if isinstance(_body, dict) else {}
         _body = _body.get('osProfile', {}) if isinstance(_body, dict) else {}
         result['admin_username'] = _body.get('adminUsername')
-        _body = response
-        _body = _body.get('virtualMachineProfile', {}) if isinstance(_body, dict) else {}
-        _body = _body.get('osProfile', {}) if isinstance(_body, dict) else {}
-        result['admin_password'] = _body.get('adminPassword')
         _body = response
         _body = _body.get('virtualMachineProfile', {}) if isinstance(_body, dict) else {}
         _body = _body.get('storageProfile', {}) if isinstance(_body, dict) else {}

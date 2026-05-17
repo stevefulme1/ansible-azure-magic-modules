@@ -60,7 +60,7 @@ options:
         description:
             - Whether soft delete is enabled for the vault.
         type: bool
-        default: "True"
+        default: true
     soft_delete_retention_in_days:
         description:
             - Number of days to retain soft-deleted vaults.
@@ -113,8 +113,8 @@ EXAMPLES = r'''
     resource_group: myResourceGroup
     name: myKeyVault
     location: eastus
-    sku_name: "example_value"
-    tenant_id: "example_value"
+    sku_name: "standard"
+    tenant_id: "my_tenant_id_value"
     state: present
 
 - name: Delete KeyVault
@@ -290,19 +290,32 @@ class AzureRMKeyVault(AzureRMModuleBase):
                     self.results['changed'] = True
 
                 if self.results['changed']:
+                    if self._diff:
+                        self.results['diff'] = dict(
+                            before=self.format_response(response),
+                            after=body,
+                        )
                     if not self.check_mode:
                         response = self.create_or_update(resource_group, name, body)
-                else:
-                    response = response
             else:
                 if self.tags:
                     body['tags'] = self.tags
+                if self._diff:
+                    self.results['diff'] = dict(
+                        before={},
+                        after=body,
+                    )
                 if not self.check_mode:
                     response = self.create_or_update(resource_group, name, body)
                 self.results['changed'] = True
 
         elif self.state == 'absent':
             if response:
+                if self._diff:
+                    self.results['diff'] = dict(
+                        before=self.format_response(response),
+                        after={},
+                    )
                 if not self.check_mode:
                     self.delete_resource(resource_group, name)
                 self.results['changed'] = True
@@ -412,7 +425,12 @@ class AzureRMKeyVault(AzureRMModuleBase):
                 None, None, [200], 0, 0,
             )
             return self.deserialize_response(response)
-        except Exception:
+        except Exception as exc:
+            self.log(f"Error getting resource: {exc}")
+            if hasattr(exc, 'status_code') and exc.status_code == 404:
+                return None
+            if '404' in str(exc) or 'NotFound' in str(exc) or 'ResourceNotFound' in str(exc):
+                return None
             return None
 
     def create_or_update(self, resource_group, name, body):
@@ -420,7 +438,7 @@ class AzureRMKeyVault(AzureRMModuleBase):
         response = self.mgmt_client.query(
             url, "PUT",
             {'api-version': '2023-07-01'},
-            None, body, [200, 201], 0, 0,
+            None, body, [200, 201], 600, 30,
         )
         return self.deserialize_response(response)
 
@@ -429,7 +447,7 @@ class AzureRMKeyVault(AzureRMModuleBase):
         self.mgmt_client.query(
             url, "DELETE",
             {'api-version': '2023-07-01'},
-            None, None, [200, 202, 204], 0, 0,
+            None, None, [200, 202, 204], 600, 30,
         )
 
     def get_resource_url(self):

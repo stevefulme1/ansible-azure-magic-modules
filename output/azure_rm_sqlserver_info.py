@@ -71,9 +71,6 @@ sqlservers:
         administrator_login:
             description: Administrator login name for the server.
             type: str
-        administrator_login_password:
-            description: Administrator login password for the server.
-            type: str
         version:
             description: Server version.
             type: str
@@ -149,10 +146,16 @@ class AzureRMSqlServerInfo(AzureRMModuleBase):
                 None, None, [200], 0, 0,
             )
             return self.deserialize_response(response)
-        except Exception:
+        except Exception as exc:
+            self.log(f"Error getting resource: {exc}")
+            if hasattr(exc, 'status_code') and exc.status_code == 404:
+                return None
+            if '404' in str(exc) or 'NotFound' in str(exc) or 'ResourceNotFound' in str(exc):
+                return None
             return None
 
     def list_by_resource_group(self):
+        results = []
         try:
             url = (
                 '/subscriptions/{subscription_id}'
@@ -162,16 +165,21 @@ class AzureRMSqlServerInfo(AzureRMModuleBase):
                 subscription_id=self.subscription_id,
                 resource_group=self.resource_group,
             )
-            response = self.mgmt_client.query(
-                url, "GET",
-                {'api-version': '2023-08-01-preview'},
-                None, None, [200], 0, 0,
-            )
-            result = self.deserialize_response(response)
-            if result and isinstance(result, dict):
-                return result.get('value', [])
-            return []
-        except Exception:
+            while url:
+                response = self.mgmt_client.query(
+                    url, "GET",
+                    {'api-version': '2023-08-01-preview'},
+                    None, None, [200], 0, 0,
+                )
+                result = self.deserialize_response(response)
+                if result and isinstance(result, dict):
+                    results.extend(result.get('value', []))
+                    url = result.get('nextLink')
+                else:
+                    break
+            return results
+        except Exception as exc:
+            self.log(f"Error listing resources: {exc}")
             return []
 
     def format_response(self, response):
@@ -182,7 +190,6 @@ class AzureRMSqlServerInfo(AzureRMModuleBase):
             tags=response.get('tags'),
         )
         result['administrator_login'] = response.get('properties', {}).get('administratorLogin')
-        result['administrator_login_password'] = response.get('properties', {}).get('administratorLoginPassword')
         result['version'] = response.get('properties', {}).get('version')
         result['minimal_tls_version'] = response.get('properties', {}).get('minimalTlsVersion')
         result['public_network_access'] = response.get('properties', {}).get('publicNetworkAccess')

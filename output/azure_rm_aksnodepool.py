@@ -88,6 +88,7 @@ options:
         description:
             - List of availability zones for the node pool.
         type: list
+        elements: str
     node_labels:
         description:
             - Kubernetes labels applied to nodes in the pool.
@@ -96,6 +97,7 @@ options:
         description:
             - Kubernetes taints applied to nodes in the pool.
         type: list
+        elements: str
     state:
         description:
             - Assert the state of the aksnodepool.
@@ -121,7 +123,7 @@ EXAMPLES = r'''
     resource_group: myResourceGroup
     name: myAksNodePool
     location: eastus
-    cluster_name: "example_value"
+    cluster_name: "my_cluster_name_value"
     state: present
 
 - name: Delete AksNodePool
@@ -237,12 +239,14 @@ class AzureRMAksNodePool(AzureRMModuleBase):
             ),
             availability_zones=dict(
                 type='list',
+                elements='str',
             ),
             node_labels=dict(
                 type='dict',
             ),
             node_taints=dict(
                 type='list',
+                elements='str',
             ),
             state=dict(type='str', default='present', choices=['present', 'absent']),
         )
@@ -308,19 +312,32 @@ class AzureRMAksNodePool(AzureRMModuleBase):
                     self.results['changed'] = True
 
                 if self.results['changed']:
+                    if self._diff:
+                        self.results['diff'] = dict(
+                            before=self.format_response(response),
+                            after=body,
+                        )
                     if not self.check_mode:
                         response = self.create_or_update(resource_group, name, body)
-                else:
-                    response = response
             else:
                 if self.tags:
                     body['tags'] = self.tags
+                if self._diff:
+                    self.results['diff'] = dict(
+                        before={},
+                        after=body,
+                    )
                 if not self.check_mode:
                     response = self.create_or_update(resource_group, name, body)
                 self.results['changed'] = True
 
         elif self.state == 'absent':
             if response:
+                if self._diff:
+                    self.results['diff'] = dict(
+                        before=self.format_response(response),
+                        after={},
+                    )
                 if not self.check_mode:
                     self.delete_resource(resource_group, name)
                 self.results['changed'] = True
@@ -432,7 +449,12 @@ class AzureRMAksNodePool(AzureRMModuleBase):
                 None, None, [200], 0, 0,
             )
             return self.deserialize_response(response)
-        except Exception:
+        except Exception as exc:
+            self.log(f"Error getting resource: {exc}")
+            if hasattr(exc, 'status_code') and exc.status_code == 404:
+                return None
+            if '404' in str(exc) or 'NotFound' in str(exc) or 'ResourceNotFound' in str(exc):
+                return None
             return None
 
     def create_or_update(self, resource_group, name, body):
@@ -440,7 +462,7 @@ class AzureRMAksNodePool(AzureRMModuleBase):
         response = self.mgmt_client.query(
             url, "PUT",
             {'api-version': '2024-02-01'},
-            None, body, [200, 201], 0, 0,
+            None, body, [200, 201], 600, 30,
         )
         return self.deserialize_response(response)
 
@@ -449,17 +471,19 @@ class AzureRMAksNodePool(AzureRMModuleBase):
         self.mgmt_client.query(
             url, "DELETE",
             {'api-version': '2024-02-01'},
-            None, None, [200, 202, 204], 0, 0,
+            None, None, [200, 202, 204], 600, 30,
         )
 
     def get_resource_url(self):
         return (
             '/subscriptions/{subscription_id}'
             '/resourceGroups/{resource_group}'
-            '/providers/Microsoft.ContainerService/managedClusters/agentPools/{name}'
+            '/providers/Microsoft.ContainerService/managedClusters/{parent_name}'
+            '/agentPools/{name}'
         ).format(
             subscription_id=self.subscription_id,
             resource_group=self.resource_group,
+            parent_name=self.cluster_name,
             name=self.name,
         )
 

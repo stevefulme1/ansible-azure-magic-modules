@@ -66,32 +66,37 @@ options:
         description:
             - IP address for the Kubernetes DNS service.
         type: str
-    default_node_pool_name:
+    default_node_pool:
         description:
-            - Name of the default node pool.
-        type: str
-        default: "default"
-    default_node_pool_vm_size:
-        description:
-            - VM size for the default node pool.
-        type: str
-    default_node_pool_count:
-        description:
-            - Number of nodes in the default node pool.
-        type: int
-    default_node_pool_min_count:
-        description:
-            - Minimum number of nodes for autoscaling.
-        type: int
-    default_node_pool_max_count:
-        description:
-            - Maximum number of nodes for autoscaling.
-        type: int
+            - Default node pool configuration.
+        type: dict
+        suboptions:
+            name:
+                description:
+                    - Name of the default node pool.
+                type: str
+                default: "default"
+            vm_size:
+                description:
+                    - VM size for the default node pool.
+                type: str
+            count:
+                description:
+                    - Number of nodes in the default node pool.
+                type: int
+            min_count:
+                description:
+                    - Minimum number of nodes for autoscaling.
+                type: int
+            max_count:
+                description:
+                    - Maximum number of nodes for autoscaling.
+                type: int
     enable_rbac:
         description:
             - Whether to enable Kubernetes RBAC.
         type: bool
-        default: "True"
+        default: true
     identity_type:
         description:
             - Type of managed identity for the cluster.
@@ -173,21 +178,9 @@ state:
         dns_service_ip:
             description: IP address for the Kubernetes DNS service.
             type: str
-        default_node_pool_name:
-            description: Name of the default node pool.
-            type: str
-        default_node_pool_vm_size:
-            description: VM size for the default node pool.
-            type: str
-        default_node_pool_count:
-            description: Number of nodes in the default node pool.
-            type: int
-        default_node_pool_min_count:
-            description: Minimum number of nodes for autoscaling.
-            type: int
-        default_node_pool_max_count:
-            description: Maximum number of nodes for autoscaling.
-            type: int
+        default_node_pool:
+            description: Default node pool configuration.
+            type: dict
         enable_rbac:
             description: Whether to enable Kubernetes RBAC.
             type: bool
@@ -230,21 +223,26 @@ class AzureRMAksCluster(AzureRMModuleBase):
             dns_service_ip=dict(
                 type='str',
             ),
-            default_node_pool_name=dict(
-                type='str',
-                default='default',
-            ),
-            default_node_pool_vm_size=dict(
-                type='str',
-            ),
-            default_node_pool_count=dict(
-                type='int',
-            ),
-            default_node_pool_min_count=dict(
-                type='int',
-            ),
-            default_node_pool_max_count=dict(
-                type='int',
+            default_node_pool=dict(
+                type='dict',
+                options=dict(
+                    name=dict(
+                        type='str',
+                        default="default",
+                    ),
+                    vm_size=dict(
+                        type='str',
+                    ),
+                    count=dict(
+                        type='int',
+                    ),
+                    min_count=dict(
+                        type='int',
+                    ),
+                    max_count=dict(
+                        type='int',
+                    ),
+                ),
             ),
             enable_rbac=dict(
                 type='bool',
@@ -267,11 +265,7 @@ class AzureRMAksCluster(AzureRMModuleBase):
         self.network_policy = None
         self.service_cidr = None
         self.dns_service_ip = None
-        self.default_node_pool_name = None
-        self.default_node_pool_vm_size = None
-        self.default_node_pool_count = None
-        self.default_node_pool_min_count = None
-        self.default_node_pool_max_count = None
+        self.default_node_pool = None
         self.enable_rbac = None
         self.identity_type = None
         self.state = None
@@ -319,19 +313,32 @@ class AzureRMAksCluster(AzureRMModuleBase):
                     self.results['changed'] = True
 
                 if self.results['changed']:
+                    if self._diff:
+                        self.results['diff'] = dict(
+                            before=self.format_response(response),
+                            after=body,
+                        )
                     if not self.check_mode:
                         response = self.create_or_update(resource_group, name, body)
-                else:
-                    response = response
             else:
                 if self.tags:
                     body['tags'] = self.tags
+                if self._diff:
+                    self.results['diff'] = dict(
+                        before={},
+                        after=body,
+                    )
                 if not self.check_mode:
                     response = self.create_or_update(resource_group, name, body)
                 self.results['changed'] = True
 
         elif self.state == 'absent':
             if response:
+                if self._diff:
+                    self.results['diff'] = dict(
+                        before=self.format_response(response),
+                        after={},
+                    )
                 if not self.check_mode:
                     self.delete_resource(resource_group, name)
                 self.results['changed'] = True
@@ -367,26 +374,8 @@ class AzureRMAksCluster(AzureRMModuleBase):
             _target = body
             _target = _target.setdefault('networkProfile', {})
             _target['dnsServiceIP'] = self.dns_service_ip
-        if self.default_node_pool_name is not None:
-            _target = body
-            _target = _target.setdefault('agentPoolProfiles[0]', {})
-            _target['name'] = self.default_node_pool_name
-        if self.default_node_pool_vm_size is not None:
-            _target = body
-            _target = _target.setdefault('agentPoolProfiles[0]', {})
-            _target['vmSize'] = self.default_node_pool_vm_size
-        if self.default_node_pool_count is not None:
-            _target = body
-            _target = _target.setdefault('agentPoolProfiles[0]', {})
-            _target['count'] = self.default_node_pool_count
-        if self.default_node_pool_min_count is not None:
-            _target = body
-            _target = _target.setdefault('agentPoolProfiles[0]', {})
-            _target['minCount'] = self.default_node_pool_min_count
-        if self.default_node_pool_max_count is not None:
-            _target = body
-            _target = _target.setdefault('agentPoolProfiles[0]', {})
-            _target['maxCount'] = self.default_node_pool_max_count
+        if self.default_node_pool is not None:
+            body['agentPoolProfiles'] = self.default_node_pool
         if self.enable_rbac is not None:
             body['enableRBAC'] = self.enable_rbac
         if self.identity_type is not None:
@@ -437,35 +426,9 @@ class AzureRMAksCluster(AzureRMModuleBase):
             _existing = _existing.get('networkProfile', {}) if isinstance(_existing, dict) else {}
             if _existing.get('dnsServiceIP') != self.dns_service_ip:
                 return True
-        # Check default_node_pool_name
-        if self.default_node_pool_name is not None:
-            _existing = existing
-            _existing = _existing.get('agentPoolProfiles[0]', {}) if isinstance(_existing, dict) else {}
-            if _existing.get('name') != self.default_node_pool_name:
-                return True
-        # Check default_node_pool_vm_size
-        if self.default_node_pool_vm_size is not None:
-            _existing = existing
-            _existing = _existing.get('agentPoolProfiles[0]', {}) if isinstance(_existing, dict) else {}
-            if _existing.get('vmSize') != self.default_node_pool_vm_size:
-                return True
-        # Check default_node_pool_count
-        if self.default_node_pool_count is not None:
-            _existing = existing
-            _existing = _existing.get('agentPoolProfiles[0]', {}) if isinstance(_existing, dict) else {}
-            if _existing.get('count') != self.default_node_pool_count:
-                return True
-        # Check default_node_pool_min_count
-        if self.default_node_pool_min_count is not None:
-            _existing = existing
-            _existing = _existing.get('agentPoolProfiles[0]', {}) if isinstance(_existing, dict) else {}
-            if _existing.get('minCount') != self.default_node_pool_min_count:
-                return True
-        # Check default_node_pool_max_count
-        if self.default_node_pool_max_count is not None:
-            _existing = existing
-            _existing = _existing.get('agentPoolProfiles[0]', {}) if isinstance(_existing, dict) else {}
-            if _existing.get('maxCount') != self.default_node_pool_max_count:
+        # Check default_node_pool
+        if self.default_node_pool is not None:
+            if existing.get('agentPoolProfiles') != self.default_node_pool:
                 return True
         # Check enable_rbac
         if self.enable_rbac is not None:
@@ -489,7 +452,12 @@ class AzureRMAksCluster(AzureRMModuleBase):
                 None, None, [200], 0, 0,
             )
             return self.deserialize_response(response)
-        except Exception:
+        except Exception as exc:
+            self.log(f"Error getting resource: {exc}")
+            if hasattr(exc, 'status_code') and exc.status_code == 404:
+                return None
+            if '404' in str(exc) or 'NotFound' in str(exc) or 'ResourceNotFound' in str(exc):
+                return None
             return None
 
     def create_or_update(self, resource_group, name, body):
@@ -497,7 +465,7 @@ class AzureRMAksCluster(AzureRMModuleBase):
         response = self.mgmt_client.query(
             url, "PUT",
             {'api-version': '2024-02-01'},
-            None, body, [200, 201], 0, 0,
+            None, body, [200, 201], 600, 30,
         )
         return self.deserialize_response(response)
 
@@ -506,7 +474,7 @@ class AzureRMAksCluster(AzureRMModuleBase):
         self.mgmt_client.query(
             url, "DELETE",
             {'api-version': '2024-02-01'},
-            None, None, [200, 202, 204], 0, 0,
+            None, None, [200, 202, 204], 600, 30,
         )
 
     def get_resource_url(self):
@@ -542,21 +510,7 @@ class AzureRMAksCluster(AzureRMModuleBase):
         _body = response
         _body = _body.get('networkProfile', {}) if isinstance(_body, dict) else {}
         result['dns_service_ip'] = _body.get('dnsServiceIP')
-        _body = response
-        _body = _body.get('agentPoolProfiles[0]', {}) if isinstance(_body, dict) else {}
-        result['default_node_pool_name'] = _body.get('name')
-        _body = response
-        _body = _body.get('agentPoolProfiles[0]', {}) if isinstance(_body, dict) else {}
-        result['default_node_pool_vm_size'] = _body.get('vmSize')
-        _body = response
-        _body = _body.get('agentPoolProfiles[0]', {}) if isinstance(_body, dict) else {}
-        result['default_node_pool_count'] = _body.get('count')
-        _body = response
-        _body = _body.get('agentPoolProfiles[0]', {}) if isinstance(_body, dict) else {}
-        result['default_node_pool_min_count'] = _body.get('minCount')
-        _body = response
-        _body = _body.get('agentPoolProfiles[0]', {}) if isinstance(_body, dict) else {}
-        result['default_node_pool_max_count'] = _body.get('maxCount')
+        result['default_node_pool'] = response.get('agentPoolProfiles')
         result['enable_rbac'] = response.get('enableRBAC')
         _body = response
         _body = _body.get('identity', {}) if isinstance(_body, dict) else {}

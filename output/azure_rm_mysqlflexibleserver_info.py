@@ -77,9 +77,6 @@ mysqlflexibleservers:
         administrator_login:
             description: Administrator login name for the server.
             type: str
-        administrator_login_password:
-            description: Administrator login password for the server.
-            type: str
         version:
             description: MySQL server version.
             type: str
@@ -161,10 +158,16 @@ class AzureRMMySqlFlexibleServerInfo(AzureRMModuleBase):
                 None, None, [200], 0, 0,
             )
             return self.deserialize_response(response)
-        except Exception:
+        except Exception as exc:
+            self.log(f"Error getting resource: {exc}")
+            if hasattr(exc, 'status_code') and exc.status_code == 404:
+                return None
+            if '404' in str(exc) or 'NotFound' in str(exc) or 'ResourceNotFound' in str(exc):
+                return None
             return None
 
     def list_by_resource_group(self):
+        results = []
         try:
             url = (
                 '/subscriptions/{subscription_id}'
@@ -174,16 +177,21 @@ class AzureRMMySqlFlexibleServerInfo(AzureRMModuleBase):
                 subscription_id=self.subscription_id,
                 resource_group=self.resource_group,
             )
-            response = self.mgmt_client.query(
-                url, "GET",
-                {'api-version': '2023-12-30'},
-                None, None, [200], 0, 0,
-            )
-            result = self.deserialize_response(response)
-            if result and isinstance(result, dict):
-                return result.get('value', [])
-            return []
-        except Exception:
+            while url:
+                response = self.mgmt_client.query(
+                    url, "GET",
+                    {'api-version': '2023-12-30'},
+                    None, None, [200], 0, 0,
+                )
+                result = self.deserialize_response(response)
+                if result and isinstance(result, dict):
+                    results.extend(result.get('value', []))
+                    url = result.get('nextLink')
+                else:
+                    break
+            return results
+        except Exception as exc:
+            self.log(f"Error listing resources: {exc}")
             return []
 
     def format_response(self, response):
@@ -200,7 +208,6 @@ class AzureRMMySqlFlexibleServerInfo(AzureRMModuleBase):
         _body = _body.get('sku', {}) if isinstance(_body, dict) else {}
         result['sku_tier'] = _body.get('tier')
         result['administrator_login'] = response.get('properties', {}).get('administratorLogin')
-        result['administrator_login_password'] = response.get('properties', {}).get('administratorLoginPassword')
         result['version'] = response.get('properties', {}).get('version')
         result['storage_size_gb'] = response.get('properties', {}).get('storageSizeGB')
         result['backup_retention_days'] = response.get('properties', {}).get('backupRetentionDays')

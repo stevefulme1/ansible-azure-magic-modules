@@ -1,7 +1,6 @@
 """Tests for the Jinja2 module renderer."""
 
 import py_compile
-import tempfile
 from pathlib import Path
 
 import pytest
@@ -119,23 +118,21 @@ class TestModuleRenderer:
         output = renderer.render_module(simple_definition)
         assert "Microsoft.Test/widgets" in output
 
-    def test_render_module_valid_python(self, renderer, simple_definition):
+    def test_render_module_valid_python(self, renderer, simple_definition, tmp_path):
         output = renderer.render_module(simple_definition)
-        with tempfile.NamedTemporaryFile(suffix=".py", mode="w", delete=False) as f:
-            f.write(output)
-            f.flush()
-            py_compile.compile(f.name, doraise=True)
+        p = tmp_path / "module.py"
+        p.write_text(output, encoding="utf-8")
+        py_compile.compile(str(p), doraise=True)
 
     def test_render_info_module_contains_class(self, renderer, simple_definition):
         output = renderer.render_info_module(simple_definition)
         assert "class AzureRMTestWidgetInfo(AzureRMModuleBase):" in output
 
-    def test_render_info_module_valid_python(self, renderer, simple_definition):
+    def test_render_info_module_valid_python(self, renderer, simple_definition, tmp_path):
         output = renderer.render_info_module(simple_definition)
-        with tempfile.NamedTemporaryFile(suffix=".py", mode="w", delete=False) as f:
-            f.write(output)
-            f.flush()
-            py_compile.compile(f.name, doraise=True)
+        p = tmp_path / "module_info.py"
+        p.write_text(output, encoding="utf-8")
+        py_compile.compile(str(p), doraise=True)
 
     def test_render_info_module_list_endpoint(self, renderer, simple_definition):
         output = renderer.render_info_module(simple_definition)
@@ -145,7 +142,7 @@ class TestModuleRenderer:
         output = renderer.render_module(simple_definition)
         assert "GNU General Public License v3.0" in output
 
-    def test_render_module_nested_api_field(self, renderer, tmp_definition):
+    def test_render_module_nested_api_field(self, renderer, tmp_definition, tmp_path):
         yaml_str = """\
             name: Foo
             module_name: azure_rm_foo
@@ -176,9 +173,9 @@ class TestModuleRenderer:
         output = renderer.render_module(defn)
         # Should use setdefault for nested path
         assert "setdefault('sku', {})" in output
-        assert py_compile.compile(
-            _write_temp(output), doraise=True
-        ) is not None
+        p = tmp_path / "nested.py"
+        p.write_text(output, encoding="utf-8")
+        assert py_compile.compile(str(p), doraise=True) is not None
 
     def test_render_module_choices(self, renderer, tmp_definition):
         yaml_str = """\
@@ -216,7 +213,7 @@ class TestModuleRenderer:
         assert "'Standard'" in output
         assert "'Premium'" in output
 
-    def test_render_module_suboptions(self, renderer, tmp_definition):
+    def test_render_module_suboptions(self, renderer, tmp_definition, tmp_path):
         yaml_str = """\
             name: Foo
             module_name: azure_rm_foo
@@ -254,13 +251,6 @@ class TestModuleRenderer:
         output = renderer.render_module(defn)
         assert "options=dict(" in output
         assert "rule_name=dict(" in output
-        assert py_compile.compile(
-            _write_temp(output), doraise=True
-        ) is not None
-
-
-def _write_temp(content: str) -> str:
-    """Write content to a temp .py file and return its path."""
-    with tempfile.NamedTemporaryFile(suffix=".py", mode="w", delete=False) as f:
-        f.write(content)
-        return f.name
+        p = tmp_path / "suboptions.py"
+        p.write_text(output, encoding="utf-8")
+        assert py_compile.compile(str(p), doraise=True) is not None

@@ -44,6 +44,7 @@ options:
         description:
             - Administrator password for the virtual machine.
         type: str
+        no_log: true
     admin_ssh_key:
         description:
             - SSH public key for the virtual machine.
@@ -81,6 +82,7 @@ options:
         description:
             - List of network interface resource IDs.
         type: list
+        elements: str
     availability_set_id:
         description:
             - Resource ID of the availability set.
@@ -114,7 +116,7 @@ EXAMPLES = r'''
     resource_group: myResourceGroup
     name: myVirtualMachine
     location: eastus
-    vm_size: "example_value"
+    vm_size: "my_vm_size_value"
     state: present
 
 - name: Delete VirtualMachine
@@ -147,9 +149,6 @@ state:
             type: str
         admin_username:
             description: Administrator username for the virtual machine.
-            type: str
-        admin_password:
-            description: Administrator password for the virtual machine.
             type: str
         admin_ssh_key:
             description: SSH public key for the virtual machine.
@@ -203,6 +202,7 @@ class AzureRMVirtualMachine(AzureRMModuleBase):
             ),
             admin_password=dict(
                 type='str',
+                no_log=True,
             ),
             admin_ssh_key=dict(
                 type='str',
@@ -229,6 +229,7 @@ class AzureRMVirtualMachine(AzureRMModuleBase):
             ),
             network_interface_ids=dict(
                 type='list',
+                elements='str',
             ),
             availability_set_id=dict(
                 type='str',
@@ -300,19 +301,32 @@ class AzureRMVirtualMachine(AzureRMModuleBase):
                     self.results['changed'] = True
 
                 if self.results['changed']:
+                    if self._diff:
+                        self.results['diff'] = dict(
+                            before=self.format_response(response),
+                            after=body,
+                        )
                     if not self.check_mode:
                         response = self.create_or_update(resource_group, name, body)
-                else:
-                    response = response
             else:
                 if self.tags:
                     body['tags'] = self.tags
+                if self._diff:
+                    self.results['diff'] = dict(
+                        before={},
+                        after=body,
+                    )
                 if not self.check_mode:
                     response = self.create_or_update(resource_group, name, body)
                 self.results['changed'] = True
 
         elif self.state == 'absent':
             if response:
+                if self._diff:
+                    self.results['diff'] = dict(
+                        before=self.format_response(response),
+                        after={},
+                    )
                 if not self.check_mode:
                     self.delete_resource(resource_group, name)
                 self.results['changed'] = True
@@ -490,7 +504,12 @@ class AzureRMVirtualMachine(AzureRMModuleBase):
                 None, None, [200], 0, 0,
             )
             return self.deserialize_response(response)
-        except Exception:
+        except Exception as exc:
+            self.log(f"Error getting resource: {exc}")
+            if hasattr(exc, 'status_code') and exc.status_code == 404:
+                return None
+            if '404' in str(exc) or 'NotFound' in str(exc) or 'ResourceNotFound' in str(exc):
+                return None
             return None
 
     def create_or_update(self, resource_group, name, body):
@@ -498,7 +517,7 @@ class AzureRMVirtualMachine(AzureRMModuleBase):
         response = self.mgmt_client.query(
             url, "PUT",
             {'api-version': '2024-03-01'},
-            None, body, [200, 201], 0, 0,
+            None, body, [200, 201], 600, 30,
         )
         return self.deserialize_response(response)
 
@@ -507,7 +526,7 @@ class AzureRMVirtualMachine(AzureRMModuleBase):
         self.mgmt_client.query(
             url, "DELETE",
             {'api-version': '2024-03-01'},
-            None, None, [200, 202, 204], 0, 0,
+            None, None, [200, 202, 204], 600, 30,
         )
 
     def get_resource_url(self):
@@ -534,9 +553,6 @@ class AzureRMVirtualMachine(AzureRMModuleBase):
         _body = response
         _body = _body.get('osProfile', {}) if isinstance(_body, dict) else {}
         result['admin_username'] = _body.get('adminUsername')
-        _body = response
-        _body = _body.get('osProfile', {}) if isinstance(_body, dict) else {}
-        result['admin_password'] = _body.get('adminPassword')
         _body = response
         _body = _body.get('osProfile', {}) if isinstance(_body, dict) else {}
         _body = _body.get('linuxConfiguration', {}) if isinstance(_body, dict) else {}

@@ -134,10 +134,13 @@ class AzureRMStorageFileShareInfo(AzureRMModuleBase):
             url = (
                 '/subscriptions/{subscription_id}'
                 '/resourceGroups/{resource_group}'
-                '/providers/Microsoft.Storage/storageAccounts/fileServices/shares/{name}'
+                '/providers/Microsoft.Storage/storageAccounts/{parent_name}'
+                '/fileServices/default'
+                '/shares/{name}'
             ).format(
                 subscription_id=self.subscription_id,
                 resource_group=self.resource_group,
+                parent_name=self.account_name,
                 name=self.name,
             )
             response = self.mgmt_client.query(
@@ -146,29 +149,43 @@ class AzureRMStorageFileShareInfo(AzureRMModuleBase):
                 None, None, [200], 0, 0,
             )
             return self.deserialize_response(response)
-        except Exception:
+        except Exception as exc:
+            self.log(f"Error getting resource: {exc}")
+            if hasattr(exc, 'status_code') and exc.status_code == 404:
+                return None
+            if '404' in str(exc) or 'NotFound' in str(exc) or 'ResourceNotFound' in str(exc):
+                return None
             return None
 
     def list_by_resource_group(self):
+        results = []
         try:
             url = (
                 '/subscriptions/{subscription_id}'
                 '/resourceGroups/{resource_group}'
-                '/providers/Microsoft.Storage/storageAccounts/fileServices/shares'
+                '/providers/Microsoft.Storage/storageAccounts/{parent_name}'
+                '/fileServices/default'
+                '/shares'
             ).format(
                 subscription_id=self.subscription_id,
                 resource_group=self.resource_group,
+                parent_name=self.account_name,
             )
-            response = self.mgmt_client.query(
-                url, "GET",
-                {'api-version': '2023-05-01'},
-                None, None, [200], 0, 0,
-            )
-            result = self.deserialize_response(response)
-            if result and isinstance(result, dict):
-                return result.get('value', [])
-            return []
-        except Exception:
+            while url:
+                response = self.mgmt_client.query(
+                    url, "GET",
+                    {'api-version': '2023-05-01'},
+                    None, None, [200], 0, 0,
+                )
+                result = self.deserialize_response(response)
+                if result and isinstance(result, dict):
+                    results.extend(result.get('value', []))
+                    url = result.get('nextLink')
+                else:
+                    break
+            return results
+        except Exception as exc:
+            self.log(f"Error listing resources: {exc}")
             return []
 
     def format_response(self, response):

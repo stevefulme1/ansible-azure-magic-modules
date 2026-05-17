@@ -5,7 +5,6 @@ and that the generated Python output compiles cleanly.
 """
 
 import py_compile
-import tempfile
 from pathlib import Path
 
 import pytest
@@ -51,23 +50,21 @@ class TestDefinitions:
                 f"{yaml_file.name}: property '{prop.name}' has invalid location '{prop.location}'"
             )
 
-    def test_generated_module_compiles(self, yaml_file, renderer):
+    def test_generated_module_compiles(self, yaml_file, renderer, tmp_path):
         defn = parse_file(yaml_file)
         output = renderer.render_module(defn)
-        with tempfile.NamedTemporaryFile(suffix=".py", mode="w", delete=False) as f:
-            f.write(output)
-            f.flush()
-            py_compile.compile(f.name, doraise=True)
+        p = tmp_path / f"{defn.module_name}.py"
+        p.write_text(output, encoding="utf-8")
+        py_compile.compile(str(p), doraise=True)
 
-    def test_generated_info_module_compiles(self, yaml_file, renderer):
+    def test_generated_info_module_compiles(self, yaml_file, renderer, tmp_path):
         defn = parse_file(yaml_file)
         if not defn.generate_info:
             pytest.skip("generate_info is False")
         output = renderer.render_info_module(defn)
-        with tempfile.NamedTemporaryFile(suffix=".py", mode="w", delete=False) as f:
-            f.write(output)
-            f.flush()
-            py_compile.compile(f.name, doraise=True)
+        p = tmp_path / f"{defn.module_name}_info.py"
+        p.write_text(output, encoding="utf-8")
+        py_compile.compile(str(p), doraise=True)
 
     def test_no_line_exceeds_160_chars(self, yaml_file, renderer):
         """Ensure generated code passes ansible-test pep8 line length."""

@@ -89,21 +89,9 @@ aksclusters:
         dns_service_ip:
             description: IP address for the Kubernetes DNS service.
             type: str
-        default_node_pool_name:
-            description: Name of the default node pool.
-            type: str
-        default_node_pool_vm_size:
-            description: VM size for the default node pool.
-            type: str
-        default_node_pool_count:
-            description: Number of nodes in the default node pool.
-            type: int
-        default_node_pool_min_count:
-            description: Minimum number of nodes for autoscaling.
-            type: int
-        default_node_pool_max_count:
-            description: Maximum number of nodes for autoscaling.
-            type: int
+        default_node_pool:
+            description: Default node pool configuration.
+            type: dict
         enable_rbac:
             description: Whether to enable Kubernetes RBAC.
             type: bool
@@ -176,10 +164,16 @@ class AzureRMAksClusterInfo(AzureRMModuleBase):
                 None, None, [200], 0, 0,
             )
             return self.deserialize_response(response)
-        except Exception:
+        except Exception as exc:
+            self.log(f"Error getting resource: {exc}")
+            if hasattr(exc, 'status_code') and exc.status_code == 404:
+                return None
+            if '404' in str(exc) or 'NotFound' in str(exc) or 'ResourceNotFound' in str(exc):
+                return None
             return None
 
     def list_by_resource_group(self):
+        results = []
         try:
             url = (
                 '/subscriptions/{subscription_id}'
@@ -189,16 +183,21 @@ class AzureRMAksClusterInfo(AzureRMModuleBase):
                 subscription_id=self.subscription_id,
                 resource_group=self.resource_group,
             )
-            response = self.mgmt_client.query(
-                url, "GET",
-                {'api-version': '2024-02-01'},
-                None, None, [200], 0, 0,
-            )
-            result = self.deserialize_response(response)
-            if result and isinstance(result, dict):
-                return result.get('value', [])
-            return []
-        except Exception:
+            while url:
+                response = self.mgmt_client.query(
+                    url, "GET",
+                    {'api-version': '2024-02-01'},
+                    None, None, [200], 0, 0,
+                )
+                result = self.deserialize_response(response)
+                if result and isinstance(result, dict):
+                    results.extend(result.get('value', []))
+                    url = result.get('nextLink')
+                else:
+                    break
+            return results
+        except Exception as exc:
+            self.log(f"Error listing resources: {exc}")
             return []
 
     def format_response(self, response):
@@ -223,21 +222,7 @@ class AzureRMAksClusterInfo(AzureRMModuleBase):
         _body = response
         _body = _body.get('networkProfile', {}) if isinstance(_body, dict) else {}
         result['dns_service_ip'] = _body.get('dnsServiceIP')
-        _body = response
-        _body = _body.get('agentPoolProfiles[0]', {}) if isinstance(_body, dict) else {}
-        result['default_node_pool_name'] = _body.get('name')
-        _body = response
-        _body = _body.get('agentPoolProfiles[0]', {}) if isinstance(_body, dict) else {}
-        result['default_node_pool_vm_size'] = _body.get('vmSize')
-        _body = response
-        _body = _body.get('agentPoolProfiles[0]', {}) if isinstance(_body, dict) else {}
-        result['default_node_pool_count'] = _body.get('count')
-        _body = response
-        _body = _body.get('agentPoolProfiles[0]', {}) if isinstance(_body, dict) else {}
-        result['default_node_pool_min_count'] = _body.get('minCount')
-        _body = response
-        _body = _body.get('agentPoolProfiles[0]', {}) if isinstance(_body, dict) else {}
-        result['default_node_pool_max_count'] = _body.get('maxCount')
+        result['default_node_pool'] = response.get('agentPoolProfiles')
         result['enable_rbac'] = response.get('enableRBAC')
         _body = response
         _body = _body.get('identity', {}) if isinstance(_body, dict) else {}

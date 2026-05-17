@@ -5,6 +5,7 @@ from pathlib import Path
 import jinja2
 
 from .parser import ResourceDefinition
+from .utils import snake_to_pascal
 
 
 # ---------------------------------------------------------------------------
@@ -24,19 +25,11 @@ def _snake_to_pascal(value: str) -> str:
     """Convert snake_case to PascalCase.
 
     Example: ``address_prefixes`` -> ``AddressPrefixes``
+
+    .. deprecated::
+        Use :func:`generator.utils.snake_to_pascal` instead.
     """
-    return "".join(w.capitalize() for w in value.split("_"))
-
-
-_ANSIBLE_TYPE_MAP = {
-    "str": "str",
-    "int": "int",
-    "float": "float",
-    "bool": "bool",
-    "list": "list",
-    "dict": "dict",
-    "raw": "raw",
-}
+    return snake_to_pascal(value)
 
 
 def _to_python(value: object) -> str:
@@ -74,9 +67,10 @@ def _to_python_list(value: list, indent: int = 16) -> str:
 def _ansible_type_str(value: str) -> str:
     """Map internal type names to the string used in Ansible ``DOCUMENTATION``.
 
-    Falls back to the original value when no mapping exists.
+    Currently an identity mapping; kept as a filter hook in case future type
+    names diverge from the Ansible DOCUMENTATION names.
     """
-    return _ANSIBLE_TYPE_MAP.get(value, value)
+    return value
 
 
 # ---------------------------------------------------------------------------
@@ -88,7 +82,7 @@ class ModuleRenderer:
 
     def __init__(self, template_dir: str | Path) -> None:
         self.template_dir = Path(template_dir)
-        self.env = jinja2.Environment(
+        self.env = jinja2.Environment(  # nosec B701 — generating Python source, not HTML
             loader=jinja2.FileSystemLoader(str(self.template_dir)),
             keep_trailing_newline=True,
             trim_blocks=True,

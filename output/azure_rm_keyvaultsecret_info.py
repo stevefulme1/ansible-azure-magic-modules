@@ -71,9 +71,6 @@ keyvaultsecrets:
         vault_name:
             description: Name of the Key Vault.
             type: str
-        value:
-            description: The value of the secret.
-            type: str
         content_type:
             description: Type of the secret value such as a password.
             type: str
@@ -140,10 +137,12 @@ class AzureRMKeyVaultSecretInfo(AzureRMModuleBase):
             url = (
                 '/subscriptions/{subscription_id}'
                 '/resourceGroups/{resource_group}'
-                '/providers/Microsoft.KeyVault/vaults/secrets/{name}'
+                '/providers/Microsoft.KeyVault/vaults/{parent_name}'
+                '/secrets/{name}'
             ).format(
                 subscription_id=self.subscription_id,
                 resource_group=self.resource_group,
+                parent_name=self.vault_name,
                 name=self.name,
             )
             response = self.mgmt_client.query(
@@ -152,29 +151,42 @@ class AzureRMKeyVaultSecretInfo(AzureRMModuleBase):
                 None, None, [200], 0, 0,
             )
             return self.deserialize_response(response)
-        except Exception:
+        except Exception as exc:
+            self.log(f"Error getting resource: {exc}")
+            if hasattr(exc, 'status_code') and exc.status_code == 404:
+                return None
+            if '404' in str(exc) or 'NotFound' in str(exc) or 'ResourceNotFound' in str(exc):
+                return None
             return None
 
     def list_by_resource_group(self):
+        results = []
         try:
             url = (
                 '/subscriptions/{subscription_id}'
                 '/resourceGroups/{resource_group}'
-                '/providers/Microsoft.KeyVault/vaults/secrets'
+                '/providers/Microsoft.KeyVault/vaults/{parent_name}'
+                '/secrets'
             ).format(
                 subscription_id=self.subscription_id,
                 resource_group=self.resource_group,
+                parent_name=self.vault_name,
             )
-            response = self.mgmt_client.query(
-                url, "GET",
-                {'api-version': '2023-07-01'},
-                None, None, [200], 0, 0,
-            )
-            result = self.deserialize_response(response)
-            if result and isinstance(result, dict):
-                return result.get('value', [])
-            return []
-        except Exception:
+            while url:
+                response = self.mgmt_client.query(
+                    url, "GET",
+                    {'api-version': '2023-07-01'},
+                    None, None, [200], 0, 0,
+                )
+                result = self.deserialize_response(response)
+                if result and isinstance(result, dict):
+                    results.extend(result.get('value', []))
+                    url = result.get('nextLink')
+                else:
+                    break
+            return results
+        except Exception as exc:
+            self.log(f"Error listing resources: {exc}")
             return []
 
     def format_response(self, response):
@@ -185,7 +197,6 @@ class AzureRMKeyVaultSecretInfo(AzureRMModuleBase):
             tags=response.get('tags'),
         )
         result['vault_name'] = response.get('vaultName')
-        result['value'] = response.get('properties', {}).get('value')
         result['content_type'] = response.get('properties', {}).get('contentType')
         _props = response.get('properties', {})
         _props = _props.get('attributes', {}) if isinstance(_props, dict) else {}

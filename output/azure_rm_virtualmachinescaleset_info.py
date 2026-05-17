@@ -83,9 +83,6 @@ virtualmachinescalesets:
         admin_username:
             description: Administrator username for scale set instances.
             type: str
-        admin_password:
-            description: Administrator password for scale set instances.
-            type: str
         image_publisher:
             description: Publisher of the VM image.
             type: str
@@ -176,10 +173,16 @@ class AzureRMVirtualMachineScaleSetInfo(AzureRMModuleBase):
                 None, None, [200], 0, 0,
             )
             return self.deserialize_response(response)
-        except Exception:
+        except Exception as exc:
+            self.log(f"Error getting resource: {exc}")
+            if hasattr(exc, 'status_code') and exc.status_code == 404:
+                return None
+            if '404' in str(exc) or 'NotFound' in str(exc) or 'ResourceNotFound' in str(exc):
+                return None
             return None
 
     def list_by_resource_group(self):
+        results = []
         try:
             url = (
                 '/subscriptions/{subscription_id}'
@@ -189,16 +192,21 @@ class AzureRMVirtualMachineScaleSetInfo(AzureRMModuleBase):
                 subscription_id=self.subscription_id,
                 resource_group=self.resource_group,
             )
-            response = self.mgmt_client.query(
-                url, "GET",
-                {'api-version': '2024-03-01'},
-                None, None, [200], 0, 0,
-            )
-            result = self.deserialize_response(response)
-            if result and isinstance(result, dict):
-                return result.get('value', [])
-            return []
-        except Exception:
+            while url:
+                response = self.mgmt_client.query(
+                    url, "GET",
+                    {'api-version': '2024-03-01'},
+                    None, None, [200], 0, 0,
+                )
+                result = self.deserialize_response(response)
+                if result and isinstance(result, dict):
+                    results.extend(result.get('value', []))
+                    url = result.get('nextLink')
+                else:
+                    break
+            return results
+        except Exception as exc:
+            self.log(f"Error listing resources: {exc}")
             return []
 
     def format_response(self, response):
@@ -224,10 +232,6 @@ class AzureRMVirtualMachineScaleSetInfo(AzureRMModuleBase):
         _body = _body.get('virtualMachineProfile', {}) if isinstance(_body, dict) else {}
         _body = _body.get('osProfile', {}) if isinstance(_body, dict) else {}
         result['admin_username'] = _body.get('adminUsername')
-        _body = response
-        _body = _body.get('virtualMachineProfile', {}) if isinstance(_body, dict) else {}
-        _body = _body.get('osProfile', {}) if isinstance(_body, dict) else {}
-        result['admin_password'] = _body.get('adminPassword')
         _body = response
         _body = _body.get('virtualMachineProfile', {}) if isinstance(_body, dict) else {}
         _body = _body.get('storageProfile', {}) if isinstance(_body, dict) else {}

@@ -64,32 +64,28 @@ properties:
     description: "IP address for the Kubernetes DNS service."
     api_field: networkProfile.dnsServiceIP
     location: body
-  default_node_pool_name:
-    type: str
-    description: "Name of the default node pool."
-    api_field: agentPoolProfiles[0].name
+  default_node_pool:
+    type: dict
+    description: "Default node pool configuration."
+    api_field: agentPoolProfiles
     location: body
-    default: "default"
-  default_node_pool_vm_size:
-    type: str
-    description: "VM size for the default node pool."
-    api_field: agentPoolProfiles[0].vmSize
-    location: body
-  default_node_pool_count:
-    type: int
-    description: "Number of nodes in the default node pool."
-    api_field: agentPoolProfiles[0].count
-    location: body
-  default_node_pool_min_count:
-    type: int
-    description: "Minimum number of nodes for autoscaling."
-    api_field: agentPoolProfiles[0].minCount
-    location: body
-  default_node_pool_max_count:
-    type: int
-    description: "Maximum number of nodes for autoscaling."
-    api_field: agentPoolProfiles[0].maxCount
-    location: body
+    suboptions:
+      name:
+        type: str
+        description: "Name of the default node pool."
+        default: "default"
+      vm_size:
+        type: str
+        description: "VM size for the default node pool."
+      count:
+        type: int
+        description: "Number of nodes in the default node pool."
+      min_count:
+        type: int
+        description: "Minimum number of nodes for autoscaling."
+      max_count:
+        type: int
+        description: "Maximum number of nodes for autoscaling."
   enable_rbac:
     type: bool
     description: "Whether to enable Kubernetes RBAC."

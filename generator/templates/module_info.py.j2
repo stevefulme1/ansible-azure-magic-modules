@@ -88,7 +88,7 @@ RETURN = r'''
             description: Resource tags.
             type: dict
 {% for prop in resource.properties %}
-{% if prop.name not in ('resource_group', 'name', 'location', 'tags') %}
+{% if prop.name not in ('resource_group', 'name', 'location', 'tags') and not prop.no_log %}
         {{ prop.name }}:
             description: {{ prop.description }}
             type: {{ prop.type }}
@@ -145,6 +145,35 @@ class AzureRM{{ resource.name }}Info(AzureRMModuleBase):
 
     def get_resource(self):
         try:
+{% if '/' in resource.resource_type %}
+{% set rt_parts = resource.resource_type.split('/') %}
+{% if rt_parts | length == 3 %}
+            url = (
+                '/subscriptions/{subscription_id}'
+                '/resourceGroups/{resource_group}'
+                '/providers/{{ resource.provider }}/{{ rt_parts[0] }}/{parent_name}'
+                '/{{ rt_parts[1] }}/default'
+                '/{{ rt_parts[2] }}/{name}'
+            ).format(
+                subscription_id=self.subscription_id,
+                resource_group=self.resource_group,
+                parent_name=self.{{ resource.parent_params[0] if resource.parent_params else 'name' }},
+                name=self.name,
+            )
+{% else %}
+            url = (
+                '/subscriptions/{subscription_id}'
+                '/resourceGroups/{resource_group}'
+                '/providers/{{ resource.provider }}/{{ rt_parts[0] }}/{parent_name}'
+                '/{{ rt_parts[1] }}/{name}'
+            ).format(
+                subscription_id=self.subscription_id,
+                resource_group=self.resource_group,
+                parent_name=self.{{ resource.parent_params[0] if resource.parent_params else 'name' }},
+                name=self.name,
+            )
+{% endif %}
+{% else %}
             url = (
                 '/subscriptions/{subscription_id}'
                 '/resourceGroups/{resource_group}'
@@ -154,17 +183,51 @@ class AzureRM{{ resource.name }}Info(AzureRMModuleBase):
                 resource_group=self.resource_group,
                 name=self.name,
             )
+{% endif %}
             response = self.mgmt_client.query(
                 url, "GET",
                 {'api-version': '{{ resource.api_version }}'},
                 None, None, [200], 0, 0,
             )
             return self.deserialize_response(response)
-        except Exception:
+        except Exception as exc:
+            self.log(f"Error getting resource: {exc}")
+            if hasattr(exc, 'status_code') and exc.status_code == 404:
+                return None
+            if '404' in str(exc) or 'NotFound' in str(exc) or 'ResourceNotFound' in str(exc):
+                return None
             return None
 
     def list_by_resource_group(self):
+        results = []
         try:
+{% if '/' in resource.resource_type %}
+{% set rt_parts = resource.resource_type.split('/') %}
+{% if rt_parts | length == 3 %}
+            url = (
+                '/subscriptions/{subscription_id}'
+                '/resourceGroups/{resource_group}'
+                '/providers/{{ resource.provider }}/{{ rt_parts[0] }}/{parent_name}'
+                '/{{ rt_parts[1] }}/default'
+                '/{{ rt_parts[2] }}'
+            ).format(
+                subscription_id=self.subscription_id,
+                resource_group=self.resource_group,
+                parent_name=self.{{ resource.parent_params[0] if resource.parent_params else 'name' }},
+            )
+{% else %}
+            url = (
+                '/subscriptions/{subscription_id}'
+                '/resourceGroups/{resource_group}'
+                '/providers/{{ resource.provider }}/{{ rt_parts[0] }}/{parent_name}'
+                '/{{ rt_parts[1] }}'
+            ).format(
+                subscription_id=self.subscription_id,
+                resource_group=self.resource_group,
+                parent_name=self.{{ resource.parent_params[0] if resource.parent_params else 'name' }},
+            )
+{% endif %}
+{% else %}
             url = (
                 '/subscriptions/{subscription_id}'
                 '/resourceGroups/{resource_group}'
@@ -173,16 +236,22 @@ class AzureRM{{ resource.name }}Info(AzureRMModuleBase):
                 subscription_id=self.subscription_id,
                 resource_group=self.resource_group,
             )
-            response = self.mgmt_client.query(
-                url, "GET",
-                {'api-version': '{{ resource.api_version }}'},
-                None, None, [200], 0, 0,
-            )
-            result = self.deserialize_response(response)
-            if result and isinstance(result, dict):
-                return result.get('value', [])
-            return []
-        except Exception:
+{% endif %}
+            while url:
+                response = self.mgmt_client.query(
+                    url, "GET",
+                    {'api-version': '{{ resource.api_version }}'},
+                    None, None, [200], 0, 0,
+                )
+                result = self.deserialize_response(response)
+                if result and isinstance(result, dict):
+                    results.extend(result.get('value', []))
+                    url = result.get('nextLink')
+                else:
+                    break
+            return results
+        except Exception as exc:
+            self.log(f"Error listing resources: {exc}")
             return []
 
     def format_response(self, response):
@@ -193,7 +262,7 @@ class AzureRM{{ resource.name }}Info(AzureRMModuleBase):
             tags=response.get('tags'),
         )
 {% for prop in resource.properties %}
-{% if prop.name not in ('resource_group', 'name', 'location', 'tags') %}
+{% if prop.name not in ('resource_group', 'name', 'location', 'tags') and not prop.no_log %}
 {% if prop.location == 'properties' %}
 {% if '.' in prop.api_field %}
 {% set parts = prop.api_field.split('.') %}
